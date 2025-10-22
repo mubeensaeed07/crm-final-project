@@ -111,7 +111,7 @@ class Supervisor extends Authenticatable
     public function modules()
     {
         return $this->belongsToMany(Module::class, 'supervisor_permissions', 'supervisor_id', 'module_id')
-                    ->withPivot(['can_create_users', 'can_edit_users', 'can_delete_users', 'can_reset_passwords', 'can_assign_modules', 'can_view_reports', 'can_mark_salary_paid', 'can_mark_salary_pending', 'can_view_salary_data', 'can_manage_salary_payments'])
+                    ->withPivot(['can_create_users', 'can_edit_users', 'can_delete_users', 'can_reset_passwords', 'can_assign_modules', 'can_view_reports', 'can_mark_salary_paid', 'can_mark_salary_pending', 'can_view_salary_data', 'can_manage_salary_payments', 'can_access_user_support', 'can_access_dealer_support'])
                     ->withTimestamps();
     }
 

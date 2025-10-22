@@ -21,7 +21,9 @@ class SupervisorPermission extends Model
         'can_mark_salary_paid',
         'can_mark_salary_pending',
         'can_view_salary_data',
-        'can_manage_salary_payments'
+        'can_manage_salary_payments',
+        'can_access_user_support',
+        'can_access_dealer_support'
     ];
 
     protected $casts = [
@@ -34,7 +36,9 @@ class SupervisorPermission extends Model
         'can_mark_salary_paid' => 'boolean',
         'can_mark_salary_pending' => 'boolean',
         'can_view_salary_data' => 'boolean',
-        'can_manage_salary_payments' => 'boolean'
+        'can_manage_salary_payments' => 'boolean',
+        'can_access_user_support' => 'boolean',
+        'can_access_dealer_support' => 'boolean'
     ];
 
     // Relationships

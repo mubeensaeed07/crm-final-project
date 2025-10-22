@@ -109,13 +109,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Temporarily disabled reCAPTCHA for testing -->
-                                    <!-- <div class="col-xl-12 mt-3">
+                                    <div class="col-xl-12 mt-3">
                                         <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
                                         @error('g-recaptcha-response')
                                             <div class="text-danger mt-1">{{ $message }}</div>
                                         @enderror
-                                    </div> -->
+                                    </div>
                                     <div class="col-xl-12 d-grid mt-2">
                                         <button type="submit" class="btn btn-lg btn-primary">Sign In</button>
                                     </div>

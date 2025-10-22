@@ -104,7 +104,9 @@ class User extends Authenticatable
                 'can_mark_salary_paid',
                 'can_mark_salary_pending',
                 'can_view_salary_data',
-                'can_manage_salary_payments'
+                'can_manage_salary_payments',
+                'can_access_user_support',
+                'can_access_dealer_support'
             ]);
     }
 

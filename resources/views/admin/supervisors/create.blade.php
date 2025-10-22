@@ -154,9 +154,20 @@
                                                             </label>
                                                         </div>
                                                         @elseif($module->name === 'SUPPORT')
-                                                        <!-- Support module - no specific permissions needed -->
-                                                        <div class="alert alert-info">
-                                                            <i class="bx bx-info-circle"></i> SUPPORT module does not require specific permissions. All users with access can use all features.
+                                                        <!-- Support module - show User Support and Dealer Support permissions -->
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-input" type="checkbox" name="permissions[{{ $module->id }}][]" value="access_user_support" id="access_user_support_{{ $module->id }}">
+                                                            <label class="form-check-label" for="access_user_support_{{ $module->id }}">
+                                                                <i class="bx bx-user me-1"></i> User Support
+                                                            </label>
+                                                            <small class="text-muted d-block">Provide support for individual users and customers</small>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="permissions[{{ $module->id }}][]" value="access_dealer_support" id="access_dealer_support_{{ $module->id }}">
+                                                            <label class="form-check-label" for="access_dealer_support_{{ $module->id }}">
+                                                                <i class="bx bx-store me-1"></i> Dealer Support
+                                                            </label>
+                                                            <small class="text-muted d-block">Provide support for dealers and business partners</small>
                                                         </div>
                                                         @endif
                                                         
@@ -189,10 +200,7 @@
                                                             </label>
                                                         </div>
                                                         @elseif($module->name === 'SUPPORT')
-                                                        <!-- SUPPORT module has no specific permissions needed -->
-                                                        <div class="alert alert-info">
-                                                            <i class="bx bx-info-circle"></i> SUPPORT module does not require specific permissions. All users with access can use all features.
-                                                        </div>
+                                                        <!-- SUPPORT module permissions already shown above -->
                                                         @endif
                                                     </div>
                                                 </div>

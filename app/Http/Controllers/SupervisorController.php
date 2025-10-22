@@ -20,14 +20,16 @@ class SupervisorController extends Controller
         $supervisors = Supervisor::where('admin_id', auth()->id())
                                 ->with(['permissions.module', 'admin'])
                                 ->get();
-        $modules = Module::all();
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        $modules = Module::whereIn('name', ['HRM', 'SUPPORT'])->get();
         
         return view('admin.supervisors.index', compact('supervisors', 'modules'));
     }
 
     public function create()
     {
-        $modules = Module::all();
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        $modules = Module::whereIn('name', ['HRM', 'SUPPORT'])->get();
         return view('admin.supervisors.create', compact('modules'));
     }
 
@@ -81,7 +83,9 @@ class SupervisorController extends Controller
                 'can_mark_salary_paid' => isset($financePermissions['can_mark_salary_paid']),
                 'can_mark_salary_pending' => isset($financePermissions['can_mark_salary_pending']),
                 'can_view_salary_data' => isset($financePermissions['can_view_salary_data']),
-                'can_manage_salary_payments' => isset($financePermissions['can_manage_salary_payments'])
+                'can_manage_salary_payments' => isset($financePermissions['can_manage_salary_payments']),
+                'can_access_user_support' => in_array('access_user_support', $permissions),
+                'can_access_dealer_support' => in_array('access_dealer_support', $permissions)
             ]);
         }
 
@@ -111,7 +115,8 @@ class SupervisorController extends Controller
                                ->where('admin_id', auth()->id())
                                ->with(['permissions.module'])
                                ->firstOrFail();
-        $modules = Module::all();
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        $modules = Module::whereIn('name', ['HRM', 'SUPPORT'])->get();
         
         return view('admin.supervisors.edit', compact('supervisor', 'modules'));
     }

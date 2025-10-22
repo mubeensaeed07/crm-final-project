@@ -125,15 +125,6 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Gmail</label>
-                                    <input type="email" class="form-control" name="gmail" value="{{ old('gmail', $user->userInfo->gmail ?? '') }}" placeholder="Enter Gmail address">
-                                    @error('gmail')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
                                     <label class="form-label">CNIC</label>
                                     <input type="text" class="form-control" name="cnic" value="{{ old('cnic', $user->userInfo->cnic ?? '') }}" placeholder="Enter CNIC number">
                                     @error('cnic')
@@ -143,18 +134,27 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Passport</label>
-                                    <input type="text" class="form-control" name="passport" value="{{ old('passport', $user->userInfo->passport ?? '') }}" placeholder="Enter passport number">
-                                    @error('passport')
+                                    <label class="form-label">Joining Date</label>
+                                    <input type="date" class="form-control" name="joining_date" value="{{ old('joining_date', $user->userInfo->joining_date ?? '') }}">
+                                    @error('joining_date')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Date of Birth</label>
-                                    <input type="date" class="form-control" name="date_of_birth" value="{{ old('date_of_birth', $user->userInfo->date_of_birth ?? '') }}">
-                                    @error('date_of_birth')
+                                    <label class="form-label">Bank Account Title</label>
+                                    <input type="text" class="form-control" name="bank_account_title" value="{{ old('bank_account_title', $user->userInfo->bank_account_title ?? '') }}" placeholder="Enter bank account title">
+                                    @error('bank_account_title')
+                                        <div class="text-danger fs-12">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Bank Account Number</label>
+                                    <input type="text" class="form-control" name="bank_account_number" value="{{ old('bank_account_number', $user->userInfo->bank_account_number ?? '') }}" placeholder="Enter bank account number">
+                                    @error('bank_account_number')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -176,10 +176,31 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">Profile Picture</label>
-                                    <input type="file" class="form-control" name="avatar" accept="image/*">
-                                    @error('avatar')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
+                                    <div class="profile-picture-upload">
+                                        <div class="current-avatar mb-3">
+                                            @if($user->userInfo && $user->userInfo->avatar)
+                                                <img id="current-avatar" src="{{ asset('storage/' . $user->userInfo->avatar) }}" alt="Current Profile" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #e9ecef;">
+                                            @else
+                                                <div id="current-avatar" class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white" style="width: 100px; height: 100px;">
+                                                    <i class="ti ti-user fs-24"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="upload-section">
+                                            <input type="file" class="form-control" name="avatar" id="avatar-input" accept="image/*" onchange="previewImage(this)">
+                                            <small class="text-muted d-block mt-1">Choose a new profile picture (JPG, PNG, GIF - Max 2MB)</small>
+                                            @error('avatar')
+                                                <div class="text-danger fs-12">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div id="image-preview" class="mt-3" style="display: none;">
+                                            <h6>Preview:</h6>
+                                            <div class="position-relative d-inline-block">
+                                                <img id="preview-img" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #e9ecef;">
+                                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle" onclick="removePreview()" style="width: 25px; height: 25px; padding: 0; font-size: 12px;">×</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -203,33 +224,6 @@
                                     <label class="form-label">City</label>
                                     <input type="text" class="form-control" name="city" value="{{ old('city', $user->userInfo->city ?? '') }}">
                                     @error('city')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">State/Province</label>
-                                    <input type="text" class="form-control" name="state" value="{{ old('state', $user->userInfo->state ?? '') }}">
-                                    @error('state')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Country</label>
-                                    <input type="text" class="form-control" name="country" value="{{ old('country', $user->userInfo->country ?? '') }}">
-                                    @error('country')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Postal Code</label>
-                                    <input type="text" class="form-control" name="postal_code" value="{{ old('postal_code', $user->userInfo->postal_code ?? '') }}">
-                                    @error('postal_code')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -469,5 +463,121 @@ function editProfile() {
     // Scroll to the form
     document.querySelector('form').scrollIntoView({ behavior: 'smooth' });
 }
+
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // Validate file size (2MB max)
+        if (file.size > 2 * 1024 * 1024) {
+            alert('File size must be less than 2MB');
+            input.value = '';
+            return;
+        }
+        
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file');
+            input.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewImg = document.getElementById('preview-img');
+            const previewDiv = document.getElementById('image-preview');
+            
+            previewImg.src = e.target.result;
+            previewDiv.style.display = 'block';
+            
+            // Update current avatar preview
+            const currentAvatar = document.getElementById('current-avatar');
+            if (currentAvatar.tagName === 'IMG') {
+                currentAvatar.src = e.target.result;
+            } else {
+                // Replace the div with an img
+                const newImg = document.createElement('img');
+                newImg.src = e.target.result;
+                newImg.alt = 'Profile Preview';
+                newImg.className = 'rounded-circle';
+                newImg.style.cssText = 'width: 100px; height: 100px; object-fit: cover; border: 3px solid #e9ecef;';
+                currentAvatar.parentNode.replaceChild(newImg, currentAvatar);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function removePreview() {
+    const input = document.getElementById('avatar-input');
+    const previewDiv = document.getElementById('image-preview');
+    const currentAvatar = document.getElementById('current-avatar');
+    
+    // Reset file input
+    input.value = '';
+    
+    // Hide preview
+    previewDiv.style.display = 'none';
+    
+    // Reset current avatar to original
+    @if($user->userInfo && $user->userInfo->avatar)
+        currentAvatar.src = '{{ asset("storage/" . $user->userInfo->avatar) }}';
+    @else
+        // Replace img with div
+        const newDiv = document.createElement('div');
+        newDiv.id = 'current-avatar';
+        newDiv.className = 'rounded-circle bg-primary d-flex align-items-center justify-content-center text-white';
+        newDiv.style.cssText = 'width: 100px; height: 100px;';
+        newDiv.innerHTML = '<i class="ti ti-user fs-24"></i>';
+        currentAvatar.parentNode.replaceChild(newDiv, currentAvatar);
+    @endif
+}
+
+// Add drag and drop functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadSection = document.querySelector('.upload-section');
+    const fileInput = document.getElementById('avatar-input');
+    
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadSection.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    // Highlight drop area when item is dragged over it
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadSection.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadSection.addEventListener(eventName, unhighlight, false);
+    });
+    
+    // Handle dropped files
+    uploadSection.addEventListener('drop', handleDrop, false);
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    function highlight(e) {
+        uploadSection.classList.add('border-primary', 'bg-light');
+    }
+    
+    function unhighlight(e) {
+        uploadSection.classList.remove('border-primary', 'bg-light');
+    }
+    
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files.length > 0) {
+            fileInput.files = files;
+            previewImage(fileInput);
+        }
+    }
+});
 </script>
 @endsection

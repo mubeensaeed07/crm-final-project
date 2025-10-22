@@ -29,9 +29,8 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required'
-            // Temporarily disabled reCAPTCHA for testing
-            // 'g-recaptcha-response' => 'required'
+            'password' => 'required',
+            'g-recaptcha-response' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -39,11 +38,11 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Temporarily disabled reCAPTCHA verification for testing
-        // $recaptchaService = new RecaptchaService();
-        // if (!$recaptchaService->verify($request->input('g-recaptcha-response'), $request->ip())) {
-        //     return redirect()->back()->withErrors(['g-recaptcha-response' => 'reCAPTCHA verification failed.'])->withInput();
-        // }
+        // Validate reCAPTCHA
+        $recaptchaService = new RecaptchaService();
+        if (!$recaptchaService->verify($request->input('g-recaptcha-response'), $request->ip())) {
+            return redirect()->back()->withErrors(['g-recaptcha-response' => 'reCAPTCHA verification failed.'])->withInput();
+        }
 
         $credentials = $request->only('email', 'password');
         
@@ -117,6 +116,7 @@ class AuthController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'whatsapp_number' => 'required|string|max:20',
             'password' => 'required|string|min:8|confirmed',
             'terms' => 'required',
             'g-recaptcha-response' => 'required'
@@ -142,6 +142,7 @@ class AuthController extends Controller
             'last_name' => $request->last_name,
             // name field removed - using first_name and last_name separately
             'email' => $request->email,
+            'phone' => $request->whatsapp_number, // Save WhatsApp number to phone field
             'password' => Hash::make($request->password),
             'role_id' => 2, // Admin role for new registrations
             'is_approved' => false,

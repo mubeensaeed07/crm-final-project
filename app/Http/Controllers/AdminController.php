@@ -31,7 +31,8 @@ class AdminController extends Controller
                     ->where('admin_id', auth()->id())
                     ->with(['userInfo.userType', 'userModules.module'])
                     ->get();
-        $modules = Module::all();
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        $modules = Module::whereIn('name', ['HRM', 'SUPPORT'])->get();
         // Only show "User" type for user creation
         $userTypes = UserType::where('name', 'User')->get();
         
@@ -52,7 +53,8 @@ class AdminController extends Controller
 
     public function modules()
     {
-        $modules = Module::all();
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        $modules = Module::whereIn('name', ['HRM', 'SUPPORT'])->get();
         return view('admin.modules', compact('modules'));
     }
 
@@ -70,16 +72,13 @@ class AdminController extends Controller
             'user_type' => 'required|exists:user_types,id',
             'salary' => 'nullable|numeric|min:0',
             'phone' => 'nullable|string|max:20',
-            'gmail' => 'nullable|email|max:255',
             'cnic' => 'nullable|string|max:20',
-            'passport' => 'nullable|string|max:20',
-            'date_of_birth' => 'nullable|date|before:today',
+            'joining_date' => 'nullable|date',
+            'bank_account_title' => 'nullable|string|max:255',
+            'bank_account_number' => 'nullable|string|max:50',
             'gender' => 'nullable|in:male,female,other',
             'address' => 'nullable|string|max:500',
             'city' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-            'country' => 'nullable|string|max:100',
-            'postal_code' => 'nullable|string|max:20',
             'job_title' => 'nullable|string|max:100',
             'department_id' => 'nullable|exists:departments,id',
             'company' => 'nullable|string|max:100',
@@ -134,16 +133,13 @@ class AdminController extends Controller
             'superadmin_id' => $superAdminId, // Same superadmin as the current admin
             'user_type_id' => $request->user_type, // User type assigned by admin
             'phone' => $request->phone,
-            'gmail' => $request->gmail,
             'cnic' => $request->cnic,
-            'passport' => $request->passport,
-            'date_of_birth' => $request->date_of_birth,
+            'joining_date' => $request->joining_date,
+            'bank_account_title' => $request->bank_account_title,
+            'bank_account_number' => $request->bank_account_number,
             'gender' => $request->gender,
             'address' => $request->address,
             'city' => $request->city,
-            'state' => $request->state,
-            'country' => $request->country,
-            'postal_code' => $request->postal_code,
             'job_title' => $request->job_title,
             'department_id' => $request->department_id,
             'company' => $request->company
@@ -190,7 +186,8 @@ class AdminController extends Controller
                    ->where('admin_id', auth()->id())
                    ->firstOrFail();
         
-        $modules = Module::all();
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        $modules = Module::whereIn('name', ['HRM', 'SUPPORT'])->get();
         // Only show "User" type for user creation
         $userTypes = UserType::where('name', 'User')->get();
         

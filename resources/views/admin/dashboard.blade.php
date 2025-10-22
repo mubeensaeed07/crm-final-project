@@ -74,6 +74,7 @@
                             </div>
                         </div>
                         
+                        {{-- FINANCE MODULE - COMMENTED OUT FOR NOW
                         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
                             <div class="card custom-card h-100 module-card" onclick="window.location.href='/finance'">
                                 <div class="card-body text-center">
@@ -90,6 +91,7 @@
                                 </div>
                             </div>
                         </div>
+                        --}}
                         
                         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
                             <div class="card custom-card h-100 module-card" onclick="window.location.href='/support'">
@@ -108,6 +110,7 @@
                             </div>
                         </div>
                         
+                        {{-- REPORTS & ANALYTICS MODULE - COMMENTED OUT FOR NOW
                         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
                             <div class="card custom-card h-100 module-card" onclick="window.location.href='/reports'">
                                 <div class="card-body text-center">
@@ -124,6 +127,7 @@
                                 </div>
                             </div>
                         </div>
+                        --}}
                     </div>
                 </div>
             </div>

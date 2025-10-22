@@ -19,20 +19,17 @@ class UserInfo extends Model
         'first_name',
         'last_name',
         'phone',
-        'gmail',
         'cnic',
-        'passport',
-        'date_of_birth',
         'gender',
         'avatar',
         'address',
         'city',
-        'state',
-        'country',
-        'postal_code',
         'job_title',
         'department',
         'department_id',
+        'joining_date',
+        'bank_account_title',
+        'bank_account_number',
         'company',
         'bio',
         'linkedin_url',
@@ -53,7 +50,7 @@ class UserInfo extends Model
     protected function casts(): array
     {
         return [
-            'date_of_birth' => 'date',
+            'joining_date' => 'date',
             'email_notifications' => 'boolean',
             'sms_notifications' => 'boolean'
         ];

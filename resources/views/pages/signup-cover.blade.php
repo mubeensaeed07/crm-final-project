@@ -82,6 +82,17 @@
                                         @enderror
                                     </div>
                                     <div class="col-xl-12">
+                                        <label for="Phone_number" class="form-label text-default">Phone Number</label>
+                                        <input type="tel" class="form-control form-control-lg @error('Phone_number') is-invalid @enderror" 
+                                               id="Phone_number" name="Phone_number" value="{{ old('Phone_number') }}" 
+                                               placeholder="92XXXXXXXXX" 
+                                               pattern="^92[0-9]{9}$" 
+                                               title="Please enter a valid Pakistani phone number starting with 92" required>
+                                        @error('Phone_number')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-xl-12">
                                         <label for="password" class="form-label text-default">Password</label>
                                         <div class="input-group">
                                             <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" 

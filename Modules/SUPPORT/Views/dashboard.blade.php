@@ -16,6 +16,33 @@
                 <div class="card-body">
                     <!-- Two Main Options -->
                     <div class="row">
+                        @php
+                            $user = Auth::user();
+                            $supervisor = Auth::guard('supervisor')->user();
+                            $currentUser = $user ?: $supervisor;
+                            $canAccessUserSupport = false;
+                            $canAccessDealerSupport = false;
+                            
+                            if ($currentUser) {
+                                // Admins have full access to all SUPPORT features
+                                if ($user && ($user->isAdmin() || $user->isSuperAdmin())) {
+                                    $canAccessUserSupport = true;
+                                    $canAccessDealerSupport = true;
+                                } elseif ($supervisor) {
+                                    // For supervisors, check their permissions
+                                    $supportModule = $supervisor->modules()->where('name', 'SUPPORT')->first();
+                                    $canAccessUserSupport = $supportModule && $supportModule->pivot && $supportModule->pivot->can_access_user_support;
+                                    $canAccessDealerSupport = $supportModule && $supportModule->pivot && $supportModule->pivot->can_access_dealer_support;
+                                } elseif ($user) {
+                                    // For regular users, check their permissions
+                                    $supportModule = $user->modules()->where('name', 'SUPPORT')->first();
+                                    $canAccessUserSupport = $supportModule && $supportModule->pivot && $supportModule->pivot->can_access_user_support;
+                                    $canAccessDealerSupport = $supportModule && $supportModule->pivot && $supportModule->pivot->can_access_dealer_support;
+                                }
+                            }
+                        @endphp
+                        
+                        @if($canAccessUserSupport)
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                             <div class="card custom-card">
                                 <div class="card-body text-center">
@@ -33,6 +60,9 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
+                        
+                        @if($canAccessDealerSupport)
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                             <div class="card custom-card">
                                 <div class="card-body text-center">
@@ -50,6 +80,38 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
+                        
+                        @if(!$currentUser)
+                        <div class="col-12">
+                            <div class="card custom-card">
+                                <div class="card-body text-center">
+                                    <div class="mb-4">
+                                        <span class="avatar avatar-xxl bg-danger-transparent">
+                                            <i class="bx bx-user-x fs-48"></i>
+                                        </span>
+                                    </div>
+                                    <h4 class="mb-3">Authentication Required</h4>
+                                    <p class="text-muted mb-4">Please log in to access the SUPPORT module.</p>
+                                    <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
+                                </div>
+                            </div>
+                        </div>
+                        @elseif(!$canAccessUserSupport && !$canAccessDealerSupport)
+                        <div class="col-12">
+                            <div class="card custom-card">
+                                <div class="card-body text-center">
+                                    <div class="mb-4">
+                                        <span class="avatar avatar-xxl bg-warning-transparent">
+                                            <i class="bx bx-lock fs-48"></i>
+                                        </span>
+                                    </div>
+                                    <h4 class="mb-3">No Support Access</h4>
+                                    <p class="text-muted mb-4">You don't have permission to access any support features. Contact your administrator.</p>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -529,13 +529,20 @@
                                         <img src="{{asset('build/assets/images/faces/9.jpg')}}" alt="img" width="32" height="32" class="rounded-circle">
                                     </div>
                                     <div class="d-sm-block d-none">
-                                        <p class="fw-semibold mb-0 lh-1">{{ Auth::user()->full_name ?? 'User' }}</p>
+                                        @php
+                                            $user = Auth::user();
+                                            $supervisor = Auth::guard('supervisor')->user();
+                                            $currentUser = $user ?: $supervisor;
+                                        @endphp
+                                        <p class="fw-semibold mb-0 lh-1">{{ $currentUser->full_name ?? 'User' }}</p>
                                         <span class="op-7 fw-normal d-block fs-11">
-                                            @if(Auth::user() && Auth::user()->isSuperAdmin())
+                                            @if($user && $user->isSuperAdmin())
                                                 Super Admin
-                                            @elseif(Auth::user() && Auth::user()->isAdmin())
+                                            @elseif($user && $user->isAdmin())
                                                 Admin
-                                            @elseif(Auth::user() && Auth::user()->isSupervisor())
+                                            @elseif($supervisor)
+                                                Supervisor
+                                            @elseif($user && $user->isSupervisor())
                                                 Supervisor
                                             @else
                                                 User
@@ -546,7 +553,9 @@
                             </a>
                             <!-- End::header-link|dropdown-toggle -->
                             <ul class="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end" aria-labelledby="mainHeaderProfile">
-                                @if(Auth::user() && Auth::user()->isSupervisor())
+                                @if($supervisor)
+                                <li><a class="dropdown-item d-flex" href="{{ route('supervisor.profile') }}"><i class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
+                                @elseif($user && $user->isSupervisor())
                                 <li><a class="dropdown-item d-flex" href="{{ route('supervisor.profile') }}"><i class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
                                 @else
                                 <li><a class="dropdown-item d-flex" href="{{ route('user.profile') }}"><i class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
@@ -560,7 +569,11 @@
                                     <a class="dropdown-item d-flex" href="#" onclick="event.preventDefault(); document.getElementById('header-logout-form').submit();">
                                         <i class="ti ti-logout fs-18 me-2 op-7"></i>Log Out
                                     </a>
-                                    @if(Auth::user() && Auth::user()->isSupervisor())
+                                    @if($supervisor)
+                                    <form id="header-logout-form" action="{{ route('supervisor.logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                    @elseif($user && $user->isSupervisor())
                                     <form id="header-logout-form" action="{{ route('supervisor.logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>

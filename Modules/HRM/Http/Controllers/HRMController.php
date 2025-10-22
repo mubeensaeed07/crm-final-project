@@ -419,8 +419,8 @@ class HRMController extends Controller
             return redirect()->back()->with('error', 'You do not have permission to create users.');
         }
         
-        // Get all modules for selection
-        $modules = \App\Models\Module::all();
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        $modules = \App\Models\Module::whereIn('name', ['HRM', 'SUPPORT'])->get();
         
         // Get departments for selection
         $auth = $this->getCurrentUser();
@@ -494,16 +494,13 @@ class HRMController extends Controller
             'email' => 'required|email|unique:users,email',
             'salary' => 'nullable|numeric|min:0',
                 'phone' => 'nullable|string|max:20',
-                'gmail' => 'nullable|email|max:255',
                 'cnic' => 'nullable|string|max:20',
-                'passport' => 'nullable|string|max:20',
-                'date_of_birth' => 'nullable|date|before:today',
+                'joining_date' => 'nullable|date',
+                'bank_account_title' => 'nullable|string|max:255',
+                'bank_account_number' => 'nullable|string|max:50',
                 'gender' => 'nullable|in:male,female,other',
                 'address' => 'nullable|string|max:500',
                 'city' => 'nullable|string|max:100',
-                'state' => 'nullable|string|max:100',
-                'country' => 'nullable|string|max:100',
-                'postal_code' => 'nullable|string|max:20',
                 'job_title' => 'nullable|string|max:100',
                 'department_id' => 'nullable|exists:departments,id',
                 'company' => 'nullable|string|max:100',
@@ -567,16 +564,13 @@ class HRMController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'phone' => $request->phone,
-            'gmail' => $request->gmail,
             'cnic' => $request->cnic,
-            'passport' => $request->passport,
-            'date_of_birth' => $request->date_of_birth,
+            'joining_date' => $request->joining_date,
+            'bank_account_title' => $request->bank_account_title,
+            'bank_account_number' => $request->bank_account_number,
             'gender' => $request->gender,
             'address' => $request->address,
             'city' => $request->city,
-            'state' => $request->state,
-            'country' => $request->country,
-            'postal_code' => $request->postal_code,
             'job_title' => $request->job_title,
             'department_id' => $request->department_id,
             'company' => $request->company,
@@ -616,6 +610,8 @@ class HRMController extends Controller
                         'can_mark_salary_pending' => in_array('mark_salary_pending', $permissions),
                         'can_view_salary_data' => in_array('view_salary_data', $permissions),
                         'can_manage_salary_payments' => in_array('manage_salary_payments', $permissions),
+                        'can_access_user_support' => in_array('access_user_support', $permissions),
+                        'can_access_dealer_support' => in_array('access_dealer_support', $permissions),
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
@@ -824,7 +820,8 @@ class HRMController extends Controller
         } else {
             $departments = collect(); // Empty collection if not admin
         }
-        $modules = \App\Models\Module::all();
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        $modules = \App\Models\Module::whereIn('name', ['HRM', 'SUPPORT'])->get();
         
         return view('hrm::users.edit', compact('user', 'departments', 'modules'));
     }
@@ -881,16 +878,13 @@ class HRMController extends Controller
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'phone' => $request->phone,
-                'gmail' => $request->gmail,
                 'cnic' => $request->cnic,
-                'passport' => $request->passport,
-                'date_of_birth' => $request->date_of_birth,
+                'joining_date' => $request->joining_date,
+                'bank_account_title' => $request->bank_account_title,
+                'bank_account_number' => $request->bank_account_number,
                 'gender' => $request->gender,
                 'address' => $request->address,
                 'city' => $request->city,
-                'state' => $request->state,
-                'country' => $request->country,
-                'postal_code' => $request->postal_code,
                 'job_title' => $request->job_title,
                 'department_id' => $request->department_id,
                 'company' => $request->company,
@@ -901,16 +895,13 @@ class HRMController extends Controller
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'phone' => $request->phone,
-                'gmail' => $request->gmail,
                 'cnic' => $request->cnic,
-                'passport' => $request->passport,
-                'date_of_birth' => $request->date_of_birth,
+                'joining_date' => $request->joining_date,
+                'bank_account_title' => $request->bank_account_title,
+                'bank_account_number' => $request->bank_account_number,
                 'gender' => $request->gender,
                 'address' => $request->address,
                 'city' => $request->city,
-                'state' => $request->state,
-                'country' => $request->country,
-                'postal_code' => $request->postal_code,
                 'job_title' => $request->job_title,
                 'department_id' => $request->department_id,
                 'company' => $request->company,

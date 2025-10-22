@@ -18,7 +18,8 @@ class SuperAdminController extends Controller
         $pendingAdmins = User::where('role_id', 2)->where('is_approved', false)->get();
         $approvedAdmins = User::where('role_id', 2)->where('is_approved', true)->get();
         $regularUsers = User::where('role_id', 3)->get();
-        $modules = Module::all();
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        $modules = Module::whereIn('name', ['HRM', 'SUPPORT'])->get();
         
         return view('superadmin.dashboard', compact(
             'totalUsers', 

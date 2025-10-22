@@ -92,15 +92,6 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Gmail</label>
-                                                    <input type="email" class="form-control" name="gmail" value="{{ old('gmail') }}">
-                                                    @error('gmail')
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
                                                     <label class="form-label">CNIC</label>
                                                     <input type="text" class="form-control" name="cnic" value="{{ old('cnic') }}">
                                                     @error('cnic')
@@ -110,18 +101,27 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Passport</label>
-                                                    <input type="text" class="form-control" name="passport" value="{{ old('passport') }}">
-                                                    @error('passport')
+                                                    <label class="form-label">Joining Date</label>
+                                                    <input type="date" class="form-control" name="joining_date" value="{{ old('joining_date') }}">
+                                                    @error('joining_date')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Date of Birth</label>
-                                                    <input type="date" class="form-control" name="date_of_birth" value="{{ old('date_of_birth') }}">
-                                                    @error('date_of_birth')
+                                                    <label class="form-label">Bank Account Title</label>
+                                                    <input type="text" class="form-control" name="bank_account_title" value="{{ old('bank_account_title') }}" placeholder="Enter bank account title">
+                                                    @error('bank_account_title')
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Bank Account Number</label>
+                                                    <input type="text" class="form-control" name="bank_account_number" value="{{ old('bank_account_number') }}" placeholder="Enter bank account number">
+                                                    @error('bank_account_number')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
@@ -194,15 +194,6 @@
                                                     <label class="form-label">Country</label>
                                                     <input type="text" class="form-control" name="country" value="{{ old('country') }}">
                                                     @error('country')
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Postal Code</label>
-                                                    <input type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}">
-                                                    @error('postal_code')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>

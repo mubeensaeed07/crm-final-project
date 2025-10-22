@@ -14,7 +14,8 @@ class SupervisorAuthController extends Controller
     public function dashboard()
     {
         $supervisor = Auth::guard('supervisor')->user();
-        $modules = $supervisor->modules;
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        $modules = $supervisor->modules()->whereIn('name', ['HRM', 'SUPPORT'])->get();
         
         // Get statistics
         $totalModules = $modules->count();
@@ -34,6 +35,11 @@ class SupervisorAuthController extends Controller
     {
         $supervisor = Auth::guard('supervisor')->user();
         $module = Module::findOrFail($moduleId);
+        
+        // Only allow access to HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        if (!in_array($module->name, ['HRM', 'SUPPORT'])) {
+            return redirect()->route('supervisor.dashboard')->with('error', 'This module is currently not available.');
+        }
         
         // Check if supervisor has access to this module
         $supervisorModule = $supervisor->modules()->where('module_id', $moduleId)->first();

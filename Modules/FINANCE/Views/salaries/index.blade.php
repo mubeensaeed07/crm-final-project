@@ -20,7 +20,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Salary</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($totalSalary ?? 0) }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($totalSalary ?? 0) }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -36,7 +36,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Paid</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($totalPaid ?? 0) }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($totalPaid ?? 0) }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-check-circle fa-2x text-gray-300"></i>
@@ -52,7 +52,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($totalPending ?? 0) }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($totalPending ?? 0) }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-clock fa-2x text-gray-300"></i>
@@ -121,7 +121,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="fw-semibold">${{ number_format($user->userInfo->salary) }}</span>
+                                                    <span class="fw-semibold">{{ number_format($user->userInfo->salary) }}</span>
                                                 </td>
                                                 <td>
                                                     @if($payment)

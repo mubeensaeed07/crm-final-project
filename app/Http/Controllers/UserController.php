@@ -22,8 +22,12 @@ class UserController extends Controller
             return redirect()->route('admin.dashboard');
         }
         
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
         $userModules = UserModule::where('user_id', $user->id)
             ->with('module')
+            ->whereHas('module', function($query) {
+                $query->whereIn('name', ['HRM', 'SUPPORT']);
+            })
             ->get();
         
         return view('user.dashboard', compact('userModules'));
@@ -39,6 +43,11 @@ class UserController extends Controller
         
         if (!$userModule) {
             return redirect()->route('user.dashboard')->with('error', 'You do not have access to this module.');
+        }
+        
+        // Only allow access to HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
+        if (!in_array($userModule->module->name, ['HRM', 'SUPPORT'])) {
+            return redirect()->route('user.dashboard')->with('error', 'This module is currently not available.');
         }
         
         // Get module permissions
@@ -63,8 +72,12 @@ class UserController extends Controller
     public function getMyModules()
     {
         $user = Auth::user();
+        // Only show HRM and SUPPORT modules for now - COMMENTED OUT FINANCE and REPORTS
         $userModules = UserModule::where('user_id', $user->id)
             ->with('module')
+            ->whereHas('module', function($query) {
+                $query->whereIn('name', ['HRM', 'SUPPORT']);
+            })
             ->get();
         
         return response()->json($userModules);
@@ -100,13 +113,12 @@ class UserController extends Controller
             'last_name' => 'user',   // Direct on user table
             'email' => 'user',       // Direct on user table
             'phone' => 'userInfo',   // In user_info table
-            'date_of_birth' => 'userInfo',
+            'joining_date' => 'userInfo',
+            'bank_account_title' => 'userInfo',
+            'bank_account_number' => 'userInfo',
             'gender' => 'userInfo',
             'address' => 'userInfo',
             'city' => 'userInfo',
-            'state' => 'userInfo',
-            'country' => 'userInfo',
-            'postal_code' => 'userInfo',
             'job_title' => 'userInfo',
             'department_id' => 'userInfo',
             'company' => 'userInfo',
@@ -142,17 +154,14 @@ class UserController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
-            'gmail' => 'nullable|email|max:255',
             'cnic' => 'nullable|string|max:20',
-            'passport' => 'nullable|string|max:20',
-            'date_of_birth' => 'nullable|date|before:today',
+            'joining_date' => 'nullable|date',
+            'bank_account_title' => 'nullable|string|max:255',
+            'bank_account_number' => 'nullable|string|max:50',
             'gender' => 'nullable|in:male,female,other',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'address' => 'nullable|string|max:500',
             'city' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-            'country' => 'nullable|string|max:100',
-            'postal_code' => 'nullable|string|max:20',
             'job_title' => 'nullable|string|max:100',
             'department_id' => 'nullable|exists:departments,id',
             'company' => 'nullable|string|max:100',
@@ -199,7 +208,32 @@ class UserController extends Controller
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
-            $avatarName = time() . '_' . $user->id . '.' . $avatar->getClientOriginalExtension();
+            
+            // Validate file size (2MB max)
+            if ($avatar->getSize() > 2 * 1024 * 1024) {
+                return redirect()->back()
+                    ->withErrors(['avatar' => 'File size must be less than 2MB'])
+                    ->withInput();
+            }
+            
+            // Validate file type
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!in_array($avatar->getMimeType(), $allowedTypes)) {
+                return redirect()->back()
+                    ->withErrors(['avatar' => 'Only JPG, PNG, GIF, and WebP images are allowed'])
+                    ->withInput();
+            }
+            
+            // Delete old avatar if exists
+            if ($user->userInfo && $user->userInfo->avatar) {
+                $oldAvatarPath = storage_path('app/public/' . $user->userInfo->avatar);
+                if (file_exists($oldAvatarPath)) {
+                    unlink($oldAvatarPath);
+                }
+            }
+            
+            // Generate unique filename
+            $avatarName = 'user_' . $user->id . '_' . time() . '.' . $avatar->getClientOriginalExtension();
             $avatar->storeAs('public/avatars', $avatarName);
             $data['avatar'] = 'avatars/' . $avatarName;
         }

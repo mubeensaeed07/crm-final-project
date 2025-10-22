@@ -21,16 +21,31 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div>
-                                    <h4>Hello, {{ Auth::user()->full_name }}!</h4>
-                                    @php
-                                        $user = Auth::user();
-                                        $roleName = $user->role_id == 1 ? 'SuperAdmin' : ($user->role_id == 2 ? 'Admin' : ($user->role_id == 3 ? 'User' : ($user->role_id == 4 ? 'Supervisor' : 'User')));
-                                    @endphp
-                                    <p class="text-muted">
-                                        <span class="badge bg-info me-2">{{ $roleName }}</span>
-                                        Access your assigned modules below:
-                                    </p>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        @if(Auth::user()->userInfo && Auth::user()->userInfo->avatar)
+                                            <img src="{{ asset('storage/' . Auth::user()->userInfo->avatar) }}" 
+                                                 alt="Profile Picture" 
+                                                 class="rounded-circle" 
+                                                 style="width: 60px; height: 60px; object-fit: cover; border: 3px solid #e9ecef;">
+                                        @else
+                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white" 
+                                                 style="width: 60px; height: 60px;">
+                                                <i class="ti ti-user fs-20"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <h4>Hello, {{ Auth::user()->full_name }}!</h4>
+                                        @php
+                                            $user = Auth::user();
+                                            $roleName = $user->role_id == 1 ? 'SuperAdmin' : ($user->role_id == 2 ? 'Admin' : ($user->role_id == 3 ? 'User' : ($user->role_id == 4 ? 'Supervisor' : 'User')));
+                                        @endphp
+                                        <p class="text-muted">
+                                            <span class="badge bg-info me-2">{{ $roleName }}</span>
+                                            Access your assigned modules below:
+                                        </p>
+                                    </div>
                                 </div>
                                 <div>
                                     @php

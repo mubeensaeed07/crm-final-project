@@ -140,26 +140,26 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Gmail</label>
-                                                    <input type="email" class="form-control" name="gmail" placeholder="Enter Gmail address (optional)">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
                                                     <label class="form-label">CNIC</label>
                                                     <input type="text" class="form-control" name="cnic" placeholder="Enter CNIC number (optional)">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Passport</label>
-                                                    <input type="text" class="form-control" name="passport" placeholder="Enter passport number (optional)">
+                                                    <label class="form-label">Joining Date</label>
+                                                    <input type="date" class="form-control" name="joining_date">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Date of Birth</label>
-                                                    <input type="date" class="form-control" name="date_of_birth">
+                                                    <label class="form-label">Bank Account Title</label>
+                                                    <input type="text" class="form-control" name="bank_account_title" placeholder="Enter bank account title (optional)">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Bank Account Number</label>
+                                                    <input type="text" class="form-control" name="bank_account_number" placeholder="Enter bank account number (optional)">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -179,28 +179,10 @@
                                                     <textarea class="form-control" name="address" rows="3" placeholder="Enter full address (optional)"></textarea>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label">City</label>
                                                     <input type="text" class="form-control" name="city" placeholder="Enter city (optional)">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">State</label>
-                                                    <input type="text" class="form-control" name="state" placeholder="Enter state (optional)">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Country</label>
-                                                    <input type="text" class="form-control" name="country" placeholder="Enter country (optional)">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Postal Code</label>
-                                                    <input type="text" class="form-control" name="postal_code" placeholder="Enter postal code (optional)">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">

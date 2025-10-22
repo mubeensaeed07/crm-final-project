@@ -155,7 +155,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Salary</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($totalSalary, 2) }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($totalSalary, 2) }}</div>
                         <div class="text-xs text-muted">Monthly payroll</div>
                     </div>
                     <div class="col-auto">
@@ -172,7 +172,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Paid Salaries</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($paidSalaries, 2) }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($paidSalaries, 2) }}</div>
                         <div class="text-xs text-muted">Completed payments</div>
                     </div>
                     <div class="col-auto">
@@ -189,7 +189,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Salaries</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($pendingSalaries, 2) }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($pendingSalaries, 2) }}</div>
                         <div class="text-xs text-muted">Awaiting payment</div>
                     </div>
                     <div class="col-auto">
@@ -245,7 +245,7 @@
                                 </td>
                                 <td>
                                     @if($user->userInfo && $user->userInfo->salary > 0)
-                                        ${{ number_format($user->userInfo->salary, 2) }}
+                                        {{ number_format($user->userInfo->salary, 2) }}
                                     @else
                                         <span class="text-muted">No salary set</span>
                                     @endif
@@ -338,7 +338,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="fw-bold text-success">${{ number_format($payment->amount, 2) }}</span>
+                                    <span class="fw-bold text-success">{{ number_format($payment->amount, 2) }}</span>
                                 </td>
                                 <td>
                                     @if($payment->status === 'paid')
@@ -384,7 +384,7 @@
                     <div class="col-md-3">
                         <div class="card bg-success text-white">
                             <div class="card-body text-center">
-                                <h5 class="card-title">${{ number_format($monthlyStats['paidAmount'], 2) }}</h5>
+                                <h5 class="card-title">{{ number_format($monthlyStats['paidAmount'], 2) }}</h5>
                                 <p class="card-text">Paid Amount</p>
                             </div>
                         </div>
@@ -392,7 +392,7 @@
                     <div class="col-md-3">
                         <div class="card bg-warning text-white">
                             <div class="card-body text-center">
-                                <h5 class="card-title">${{ number_format($monthlyStats['pendingAmount'], 2) }}</h5>
+                                <h5 class="card-title">{{ number_format($monthlyStats['pendingAmount'], 2) }}</h5>
                                 <p class="card-text">Pending Amount</p>
                             </div>
                         </div>
@@ -400,7 +400,7 @@
                     <div class="col-md-3">
                         <div class="card bg-danger text-white">
                             <div class="card-body text-center">
-                                <h5 class="card-title">${{ number_format($monthlyStats['overdueAmount'], 2) }}</h5>
+                                <h5 class="card-title">{{ number_format($monthlyStats['overdueAmount'], 2) }}</h5>
                                 <p class="card-text">Overdue Amount</p>
                             </div>
                         </div>

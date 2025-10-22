@@ -28,7 +28,7 @@
                                         </div>
                                         <div>
                                             <p class="mb-0 text-muted">Total Payroll</p>
-                                            <h4 class="mb-0 fw-semibold">${{ number_format($users->whereNotNull('salary')->sum('salary'), 2) }}</h4>
+                                            <h4 class="mb-0 fw-semibold">{{ number_format($users->whereNotNull('salary')->sum('salary'), 2) }}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -62,7 +62,7 @@
                                         </div>
                                         <div>
                                             <p class="mb-0 text-muted">Average Salary</p>
-                                            <h4 class="mb-0 fw-semibold">${{ number_format($users->whereNotNull('salary')->avg('salary') ?? 0, 2) }}</h4>
+                                            <h4 class="mb-0 fw-semibold">{{ number_format($users->whereNotNull('salary')->avg('salary') ?? 0, 2) }}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -116,7 +116,7 @@
                                                     <td>{{ $user->userInfo->job_title ?? 'Not Specified' }}</td>
                                                     <td>
                                                         @if($user->userInfo && $user->userInfo->salary)
-                                                            <span class="badge bg-success">${{ number_format($user->userInfo->salary, 2) }}</span>
+                                                            <span class="badge bg-success">{{ number_format($user->userInfo->salary, 2) }}</span>
                                                         @else
                                                             <span class="badge bg-warning">Not Set</span>
                                                         @endif

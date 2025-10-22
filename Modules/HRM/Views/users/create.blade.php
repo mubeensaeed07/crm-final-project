@@ -85,26 +85,26 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Gmail</label>
-                                                    <input type="email" class="form-control" name="gmail" value="{{ old('gmail') }}" placeholder="Enter Gmail address">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
                                                     <label class="form-label">CNIC</label>
                                                     <input type="text" class="form-control" name="cnic" value="{{ old('cnic') }}" placeholder="Enter CNIC number">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Passport</label>
-                                                    <input type="text" class="form-control" name="passport" value="{{ old('passport') }}" placeholder="Enter passport number">
+                                                    <label class="form-label">Joining Date</label>
+                                                    <input type="date" class="form-control" name="joining_date" value="{{ old('joining_date') }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Date of Birth</label>
-                                                    <input type="date" class="form-control" name="date_of_birth" value="{{ old('date_of_birth') }}">
+                                                    <label class="form-label">Bank Account Title</label>
+                                                    <input type="text" class="form-control" name="bank_account_title" value="{{ old('bank_account_title') }}" placeholder="Enter bank account title">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Bank Account Number</label>
+                                                    <input type="text" class="form-control" name="bank_account_number" value="{{ old('bank_account_number') }}" placeholder="Enter bank account number">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -128,24 +128,6 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">City</label>
                                                     <input type="text" class="form-control" name="city" value="{{ old('city') }}" placeholder="Enter city">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">State</label>
-                                                    <input type="text" class="form-control" name="state" value="{{ old('state') }}" placeholder="Enter state">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Country</label>
-                                                    <input type="text" class="form-control" name="country" value="{{ old('country') }}" placeholder="Enter country">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Postal Code</label>
-                                                    <input type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" placeholder="Enter postal code">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -188,9 +170,8 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">User Role <span class="text-danger">*</span></label>
                                                     <select class="form-control" name="role_id" required>
-                                                        <option value="">Select Role</option>
                                                         @foreach($availableRoles as $role)
-                                                        <option value="{{ $role['id'] }}" {{ old('role_id') == $role['id'] ? 'selected' : '' }}>
+                                                        <option value="{{ $role['id'] }}" {{ old('role_id') == $role['id'] ? 'selected' : (old('role_id') == '' ? 'selected' : '') }}>
                                                             {{ $role['name'] }} - {{ $role['description'] }}
                                                         </option>
                                                         @endforeach
@@ -443,11 +424,34 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
             } else if (isSupportModule) {
-                // Support module - no specific permissions needed
+                // Support module - show User Support and Dealer Support permissions for supervisors and users only
                 permissionsHTML = `
                     <h6 class="text-primary">${moduleName}</h6>
-                    <div class="alert alert-info">
-                        <i class="bx bx-info-circle"></i> SUPPORT module does not require specific permissions. All users with access can use all features.
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       name="permissions[${moduleId}][]" 
+                                       value="access_user_support" 
+                                       id="permission_${moduleId}_user_support">
+                                <label class="form-check-label" for="permission_${moduleId}_user_support">
+                                    <i class="bx bx-user me-1"></i> User Support
+                                </label>
+                                <small class="text-muted d-block">Provide support for individual users and customers</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       name="permissions[${moduleId}][]" 
+                                       value="access_dealer_support" 
+                                       id="permission_${moduleId}_dealer_support">
+                                <label class="form-check-label" for="permission_${moduleId}_dealer_support">
+                                    <i class="bx bx-store me-1"></i> Dealer Support
+                                </label>
+                                <small class="text-muted d-block">Provide support for dealers and business partners</small>
+                            </div>
+                        </div>
                     </div>
                 `;
             } else {
