@@ -293,6 +293,9 @@ Route::middleware(['auth', 'superadmin', 'prevent.back'])->prefix('superadmin')-
             Route::get('users', [AdminController::class, 'users'])->name('users');
             Route::get('modules', [AdminController::class, 'modules'])->name('modules');
             Route::get('settings', [AdminController::class, 'settings'])->name('settings');
+            Route::get('profile', [AdminController::class, 'profile'])->name('profile');
+            Route::post('profile', [AdminController::class, 'updateProfile'])->name('profile.update');
+            Route::get('logs', [App\Http\Controllers\LogsController::class, 'adminLogs'])->name('logs');
             Route::post('users', [AdminController::class, 'addUser'])->name('users.add');
             Route::get('users/api', [AdminController::class, 'getUsers'])->name('users.get');
             Route::get('users/{id}/edit', [AdminController::class, 'showEditUser'])->name('users.edit.show');
@@ -315,6 +318,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back'])->prefix('superadmin')-
 
 // User Routes
 Route::middleware(['auth', 'prevent.back'])->prefix('user')->name('user.')->group(function () {
+    Route::get('logs', [App\Http\Controllers\LogsController::class, 'userLogs'])->name('logs');
     Route::get('dashboard', [UserController::class, 'dashboard'])->name('dashboard');
     Route::get('module/{id}', [UserController::class, 'showModule'])->name('module');
     Route::get('modules', [UserController::class, 'getMyModules'])->name('modules');
@@ -328,6 +332,7 @@ Route::middleware(['auth:supervisor', 'prevent.back'])->prefix('supervisor')->na
     Route::get('profile', [SupervisorAuthController::class, 'profile'])->name('profile');
     Route::put('profile', [SupervisorAuthController::class, 'updateProfile'])->name('profile.update');
     Route::get('module/{module}', [SupervisorAuthController::class, 'module'])->name('module');
+    Route::get('logs', [App\Http\Controllers\LogsController::class, 'supervisorLogs'])->name('logs');
     Route::post('logout', [SupervisorAuthController::class, 'logout'])->name('logout');
 });
 

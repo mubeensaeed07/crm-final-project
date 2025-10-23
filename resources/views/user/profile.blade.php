@@ -123,56 +123,6 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">CNIC</label>
-                                    <input type="text" class="form-control" name="cnic" value="{{ old('cnic', $user->userInfo->cnic ?? '') }}" placeholder="Enter CNIC number">
-                                    @error('cnic')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Joining Date</label>
-                                    <input type="date" class="form-control" name="joining_date" value="{{ old('joining_date', $user->userInfo->joining_date ?? '') }}">
-                                    @error('joining_date')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Bank Account Title</label>
-                                    <input type="text" class="form-control" name="bank_account_title" value="{{ old('bank_account_title', $user->userInfo->bank_account_title ?? '') }}" placeholder="Enter bank account title">
-                                    @error('bank_account_title')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Bank Account Number</label>
-                                    <input type="text" class="form-control" name="bank_account_number" value="{{ old('bank_account_number', $user->userInfo->bank_account_number ?? '') }}" placeholder="Enter bank account number">
-                                    @error('bank_account_number')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Gender</label>
-                                    <select class="form-control" name="gender">
-                                        <option value="">Select Gender</option>
-                                        <option value="male" {{ old('gender', $user->userInfo->gender ?? '') == 'male' ? 'selected' : '' }}>Male</option>
-                                        <option value="female" {{ old('gender', $user->userInfo->gender ?? '') == 'female' ? 'selected' : '' }}>Female</option>
-                                        <option value="other" {{ old('gender', $user->userInfo->gender ?? '') == 'other' ? 'selected' : '' }}>Other</option>
-                                    </select>
-                                    @error('gender')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">Profile Picture</label>
@@ -237,29 +187,6 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Job Title</label>
-                                    <input type="text" class="form-control" name="job_title" value="{{ old('job_title', $user->userInfo->job_title ?? '') }}">
-                                    @error('job_title')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Department</label>
-                                                    <select class="form-control" name="department_id">
-                                                        <option value="">Select Department</option>
-                                                        @foreach($departments as $department)
-                                                            <option value="{{ $department->id }}" {{ old('department_id', $user->userInfo->department_id ?? '') == $department->id ? 'selected' : '' }}>{{ $department->name }} ({{ $department->code }})</option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('department_id')
-                                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
                                     <label class="form-label">Company</label>
                                     <input type="text" class="form-control" name="company" value="{{ old('company', $user->userInfo->company ?? '') }}">
                                     @error('company')
@@ -312,95 +239,7 @@
                             </div>
                         </div>
 
-                        <!-- Emergency Contact -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h5 class="section-title">Emergency Contact</h5>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Contact Name</label>
-                                    <input type="text" class="form-control" name="emergency_contact_name" value="{{ old('emergency_contact_name', $user->emergency_contact_name) }}">
-                                    @error('emergency_contact_name')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Contact Phone</label>
-                                    <input type="tel" class="form-control" name="emergency_contact_phone" value="{{ old('emergency_contact_phone', $user->emergency_contact_phone) }}">
-                                    @error('emergency_contact_phone')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Relationship</label>
-                                    <input type="text" class="form-control" name="emergency_contact_relationship" value="{{ old('emergency_contact_relationship', $user->emergency_contact_relationship) }}" placeholder="e.g., Spouse, Parent, Friend">
-                                    @error('emergency_contact_relationship')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Preferences -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h5 class="section-title">Preferences</h5>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Timezone</label>
-                                    <select class="form-control" name="timezone">
-                                        <option value="UTC" {{ old('timezone', $user->timezone) == 'UTC' ? 'selected' : '' }}>UTC</option>
-                                        <option value="America/New_York" {{ old('timezone', $user->timezone) == 'America/New_York' ? 'selected' : '' }}>Eastern Time</option>
-                                        <option value="America/Chicago" {{ old('timezone', $user->timezone) == 'America/Chicago' ? 'selected' : '' }}>Central Time</option>
-                                        <option value="America/Denver" {{ old('timezone', $user->timezone) == 'America/Denver' ? 'selected' : '' }}>Mountain Time</option>
-                                        <option value="America/Los_Angeles" {{ old('timezone', $user->timezone) == 'America/Los_Angeles' ? 'selected' : '' }}>Pacific Time</option>
-                                        <option value="Europe/London" {{ old('timezone', $user->timezone) == 'Europe/London' ? 'selected' : '' }}>London</option>
-                                        <option value="Europe/Paris" {{ old('timezone', $user->timezone) == 'Europe/Paris' ? 'selected' : '' }}>Paris</option>
-                                        <option value="Asia/Tokyo" {{ old('timezone', $user->timezone) == 'Asia/Tokyo' ? 'selected' : '' }}>Tokyo</option>
-                                    </select>
-                                    @error('timezone')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Language</label>
-                                    <select class="form-control" name="language">
-                                        <option value="en" {{ old('language', $user->language) == 'en' ? 'selected' : '' }}>English</option>
-                                        <option value="es" {{ old('language', $user->language) == 'es' ? 'selected' : '' }}>Spanish</option>
-                                        <option value="fr" {{ old('language', $user->language) == 'fr' ? 'selected' : '' }}>French</option>
-                                        <option value="de" {{ old('language', $user->language) == 'de' ? 'selected' : '' }}>German</option>
-                                        <option value="it" {{ old('language', $user->language) == 'it' ? 'selected' : '' }}>Italian</option>
-                                        <option value="pt" {{ old('language', $user->language) == 'pt' ? 'selected' : '' }}>Portuguese</option>
-                                        <option value="zh" {{ old('language', $user->language) == 'zh' ? 'selected' : '' }}>Chinese</option>
-                                        <option value="ja" {{ old('language', $user->language) == 'ja' ? 'selected' : '' }}>Japanese</option>
-                                    </select>
-                                    @error('language')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Notifications</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="email_notifications" value="1" {{ old('email_notifications', $user->email_notifications) ? 'checked' : '' }}>
-                                        <label class="form-check-label">Email Notifications</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="sms_notifications" value="1" {{ old('sms_notifications', $user->sms_notifications) ? 'checked' : '' }}>
-                                        <label class="form-check-label">SMS Notifications</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Password Change Section -->
                         <div class="row mb-4">

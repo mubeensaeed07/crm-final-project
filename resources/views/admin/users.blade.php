@@ -205,7 +205,7 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label">Company</label>
-                                                    <input type="text" class="form-control" name="company" placeholder="Enter company (optional)">
+                                                    <input type="text" class="form-control" name="company" placeholder="Enter company (optional)" value="{{ $admin->company_name ?? '' }}">
                                                 </div>
                                             </div>
                                             <div class="col-12">

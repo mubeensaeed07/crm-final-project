@@ -23,7 +23,17 @@ class SupervisorPermission extends Model
         'can_view_salary_data',
         'can_manage_salary_payments',
         'can_access_user_support',
-        'can_access_dealer_support'
+        'can_access_dealer_support',
+        'user_support_can_view',
+        'user_support_can_update',
+        'user_support_can_expiry_update',
+        'user_support_can_package_change',
+        'user_support_can_add_days',
+        'dealer_support_can_view',
+        'dealer_support_can_update',
+        'dealer_support_can_expiry_update',
+        'dealer_support_can_package_change',
+        'dealer_support_can_add_days'
     ];
 
     protected $casts = [
@@ -38,7 +48,17 @@ class SupervisorPermission extends Model
         'can_view_salary_data' => 'boolean',
         'can_manage_salary_payments' => 'boolean',
         'can_access_user_support' => 'boolean',
-        'can_access_dealer_support' => 'boolean'
+        'can_access_dealer_support' => 'boolean',
+        'user_support_can_view' => 'boolean',
+        'user_support_can_update' => 'boolean',
+        'user_support_can_expiry_update' => 'boolean',
+        'user_support_can_package_change' => 'boolean',
+        'user_support_can_add_days' => 'boolean',
+        'dealer_support_can_view' => 'boolean',
+        'dealer_support_can_update' => 'boolean',
+        'dealer_support_can_expiry_update' => 'boolean',
+        'dealer_support_can_package_change' => 'boolean',
+        'dealer_support_can_add_days' => 'boolean'
     ];
 
     // Relationships

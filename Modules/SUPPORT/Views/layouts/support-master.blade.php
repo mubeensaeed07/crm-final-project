@@ -56,12 +56,36 @@
             <!-- Start::main-sidebar-header -->
             <div class="main-sidebar-header">
                 <a href="{{url('index')}}" class="header-logo">
-                    <img src="{{asset('build/assets/images/brand-logos/desktop-logo.png')}}" alt="logo" class="desktop-logo">
-                    <img src="{{asset('build/assets/images/brand-logos/toggle-logo.png')}}" alt="logo" class="toggle-logo">
-                    <img src="{{asset('build/assets/images/brand-logos/desktop-dark.png')}}" alt="logo" class="desktop-dark">
-                    <img src="{{asset('build/assets/images/brand-logos/toggle-dark.png')}}" alt="logo" class="toggle-dark">
-                    <img src="{{asset('build/assets/images/brand-logos/desktop-white.png')}}" alt="logo" class="desktop-white">
-                    <img src="{{asset('build/assets/images/brand-logos/toggle-white.png')}}" alt="logo" class="toggle-white">
+                    @php
+                        use App\Models\User;
+                        $user = Auth::user();
+                        $admin = null;
+                        
+                        // Get admin info based on user type
+                        if ($user && $user->isAdmin()) {
+                            $admin = $user;
+                        } elseif ($user && $user->isSupervisor()) {
+                            $admin = User::find($user->admin_id);
+                        } elseif ($user && $user->role_id == 3) { // Regular user
+                            $admin = User::find($user->admin_id);
+                        }
+                    @endphp
+                    
+                    @if($admin && $admin->company_print_logo)
+                        <img src="{{ asset('storage/' . $admin->company_print_logo) }}" alt="Company Logo" class="desktop-logo" style="max-height: 40px; object-fit: contain;">
+                        <img src="{{ asset('storage/' . $admin->company_print_logo) }}" alt="Company Logo" class="toggle-logo" style="max-height: 40px; object-fit: contain;">
+                        <img src="{{ asset('storage/' . $admin->company_print_logo) }}" alt="Company Logo" class="desktop-dark" style="max-height: 40px; object-fit: contain;">
+                        <img src="{{ asset('storage/' . $admin->company_print_logo) }}" alt="Company Logo" class="toggle-dark" style="max-height: 40px; object-fit: contain;">
+                        <img src="{{ asset('storage/' . $admin->company_print_logo) }}" alt="Company Logo" class="desktop-white" style="max-height: 40px; object-fit: contain;">
+                        <img src="{{ asset('storage/' . $admin->company_print_logo) }}" alt="Company Logo" class="toggle-white" style="max-height: 40px; object-fit: contain;">
+                    @else
+                        <img src="{{asset('build/assets/images/brand-logos/desktop-logo.png')}}" alt="logo" class="desktop-logo">
+                        <img src="{{asset('build/assets/images/brand-logos/toggle-logo.png')}}" alt="logo" class="toggle-logo">
+                        <img src="{{asset('build/assets/images/brand-logos/desktop-dark.png')}}" alt="logo" class="desktop-dark">
+                        <img src="{{asset('build/assets/images/brand-logos/toggle-dark.png')}}" alt="logo" class="toggle-dark">
+                        <img src="{{asset('build/assets/images/brand-logos/desktop-white.png')}}" alt="logo" class="desktop-white">
+                        <img src="{{asset('build/assets/images/brand-logos/toggle-white.png')}}" alt="logo" class="toggle-white">
+                    @endif
                 </a>
             </div>
             <!-- End::main-sidebar-header -->

@@ -26,7 +26,14 @@ class User extends Authenticatable
         'is_approved',
         'admin_id',
         'superadmin_id',
-        'phone'
+        'phone',
+        'company_name',
+        'company_location',
+        'company_ntn_number',
+        'company_logo',
+        'company_print_logo',
+        'company_bio',
+        'company_country'
     ];
 
     /**
@@ -91,24 +98,34 @@ class User extends Authenticatable
     /**
      * Get the modules through user modules.
      */
-    public function modules()
-    {
-        return $this->belongsToMany(Module::class, 'user_modules')
-            ->withPivot([
-                'can_create_users',
-                'can_edit_users',
-                'can_delete_users',
-                'can_reset_passwords',
-                'can_assign_modules',
-                'can_view_reports',
-                'can_mark_salary_paid',
-                'can_mark_salary_pending',
-                'can_view_salary_data',
-                'can_manage_salary_payments',
-                'can_access_user_support',
-                'can_access_dealer_support'
-            ]);
-    }
+        public function modules()
+        {
+            return $this->belongsToMany(Module::class, 'user_modules')
+                ->withPivot([
+                    'can_create_users',
+                    'can_edit_users',
+                    'can_delete_users',
+                    'can_reset_passwords',
+                    'can_assign_modules',
+                    'can_view_reports',
+                    'can_mark_salary_paid',
+                    'can_mark_salary_pending',
+                    'can_view_salary_data',
+                    'can_manage_salary_payments',
+                    'can_access_user_support',
+                    'can_access_dealer_support',
+                    'user_support_can_view',
+                    'user_support_can_update',
+                    'user_support_can_expiry_update',
+                    'user_support_can_package_change',
+                    'user_support_can_add_days',
+                    'dealer_support_can_view',
+                    'dealer_support_can_update',
+                    'dealer_support_can_expiry_update',
+                    'dealer_support_can_package_change',
+                    'dealer_support_can_add_days'
+                ]);
+        }
 
     /**
      * Check if user is super admin.

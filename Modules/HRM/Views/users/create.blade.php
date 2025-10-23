@@ -150,7 +150,7 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label">Company</label>
-                                                    <input type="text" class="form-control" name="company" value="{{ old('company') }}" placeholder="Enter company">
+                                                    <input type="text" class="form-control" name="company" value="{{ old('company', $adminCompanyName) }}" placeholder="Enter company">
                                                 </div>
                                             </div>
                                         </div>
@@ -424,32 +424,138 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
             } else if (isSupportModule) {
-                // Support module - show User Support and Dealer Support permissions for supervisors and users only
+                // Support module - show User Support and Dealer Support permissions with sub-permissions
                 permissionsHTML = `
                     <h6 class="text-primary">${moduleName}</h6>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" 
-                                       name="permissions[${moduleId}][]" 
-                                       value="access_user_support" 
-                                       id="permission_${moduleId}_user_support">
-                                <label class="form-check-label" for="permission_${moduleId}_user_support">
-                                    <i class="bx bx-user me-1"></i> User Support
-                                </label>
-                                <small class="text-muted d-block">Provide support for individual users and customers</small>
+                            <div class="card border">
+                                <div class="card-header bg-light">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="permissions[${moduleId}][]" 
+                                               value="access_user_support" 
+                                               id="permission_${moduleId}_user_support"
+                                               onchange="toggleSubPermissions('${moduleId}', 'user_support', this.checked)">
+                                        <label class="form-check-label" for="permission_${moduleId}_user_support">
+                                            <i class="bx bx-user me-1"></i> <strong>User Support</strong>
+                                        </label>
+                                        <small class="text-muted d-block">Provide support for individual users and customers</small>
+                                    </div>
+                                </div>
+                                <div class="card-body" id="user_support_sub_permissions_${moduleId}" style="display: none;">
+                                    <h6 class="text-secondary mb-3">User Support Permissions:</h6>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="user_support_permissions[${moduleId}][]" 
+                                               value="user_support_can_view" 
+                                               id="user_support_view_${moduleId}">
+                                        <label class="form-check-label" for="user_support_view_${moduleId}">
+                                            <i class="bx bx-show me-1"></i> User can view
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="user_support_permissions[${moduleId}][]" 
+                                               value="user_support_can_update" 
+                                               id="user_support_update_${moduleId}">
+                                        <label class="form-check-label" for="user_support_update_${moduleId}">
+                                            <i class="bx bx-edit me-1"></i> User can update
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="user_support_permissions[${moduleId}][]" 
+                                               value="user_support_can_expiry_update" 
+                                               id="user_support_expiry_${moduleId}">
+                                        <label class="form-check-label" for="user_support_expiry_${moduleId}">
+                                            <i class="bx bx-time me-1"></i> User expiry update
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="user_support_permissions[${moduleId}][]" 
+                                               value="user_support_can_package_change" 
+                                               id="user_support_package_${moduleId}">
+                                        <label class="form-check-label" for="user_support_package_${moduleId}">
+                                            <i class="bx bx-package me-1"></i> User package change
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="user_support_permissions[${moduleId}][]" 
+                                               value="user_support_can_add_days" 
+                                               id="user_support_days_${moduleId}">
+                                        <label class="form-check-label" for="user_support_days_${moduleId}">
+                                            <i class="bx bx-plus-circle me-1"></i> User add days
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" 
-                                       name="permissions[${moduleId}][]" 
-                                       value="access_dealer_support" 
-                                       id="permission_${moduleId}_dealer_support">
-                                <label class="form-check-label" for="permission_${moduleId}_dealer_support">
-                                    <i class="bx bx-store me-1"></i> Dealer Support
-                                </label>
-                                <small class="text-muted d-block">Provide support for dealers and business partners</small>
+                            <div class="card border">
+                                <div class="card-header bg-light">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="permissions[${moduleId}][]" 
+                                               value="access_dealer_support" 
+                                               id="permission_${moduleId}_dealer_support"
+                                               onchange="toggleSubPermissions('${moduleId}', 'dealer_support', this.checked)">
+                                        <label class="form-check-label" for="permission_${moduleId}_dealer_support">
+                                            <i class="bx bx-store me-1"></i> <strong>Dealer Support</strong>
+                                        </label>
+                                        <small class="text-muted d-block">Provide support for dealers and business partners</small>
+                                    </div>
+                                </div>
+                                <div class="card-body" id="dealer_support_sub_permissions_${moduleId}" style="display: none;">
+                                    <h6 class="text-secondary mb-3">Dealer Support Permissions:</h6>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="dealer_support_permissions[${moduleId}][]" 
+                                               value="dealer_support_can_view" 
+                                               id="dealer_support_view_${moduleId}">
+                                        <label class="form-check-label" for="dealer_support_view_${moduleId}">
+                                            <i class="bx bx-show me-1"></i> Dealer can view
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="dealer_support_permissions[${moduleId}][]" 
+                                               value="dealer_support_can_update" 
+                                               id="dealer_support_update_${moduleId}">
+                                        <label class="form-check-label" for="dealer_support_update_${moduleId}">
+                                            <i class="bx bx-edit me-1"></i> Dealer can update
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="dealer_support_permissions[${moduleId}][]" 
+                                               value="dealer_support_can_expiry_update" 
+                                               id="dealer_support_expiry_${moduleId}">
+                                        <label class="form-check-label" for="dealer_support_expiry_${moduleId}">
+                                            <i class="bx bx-time me-1"></i> Dealer expiry update
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="dealer_support_permissions[${moduleId}][]" 
+                                               value="dealer_support_can_package_change" 
+                                               id="dealer_support_package_${moduleId}">
+                                        <label class="form-check-label" for="dealer_support_package_${moduleId}">
+                                            <i class="bx bx-package me-1"></i> Dealer package change
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="dealer_support_permissions[${moduleId}][]" 
+                                               value="dealer_support_can_add_days" 
+                                               id="dealer_support_days_${moduleId}">
+                                        <label class="form-check-label" for="dealer_support_days_${moduleId}">
+                                            <i class="bx bx-plus-circle me-1"></i> Dealer add days
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -478,6 +584,24 @@ document.addEventListener('DOMContentLoaded', function() {
             permissionsContainer.appendChild(modulePermissionsDiv);
         });
     }
+
 });
+
+// Global function to toggle sub-permissions visibility
+function toggleSubPermissions(moduleId, supportType, isChecked) {
+    const subPermissionsDiv = document.getElementById(`${supportType}_sub_permissions_${moduleId}`);
+    if (subPermissionsDiv) {
+        if (isChecked) {
+            subPermissionsDiv.style.display = 'block';
+        } else {
+            subPermissionsDiv.style.display = 'none';
+            // Uncheck all sub-permissions when main permission is unchecked
+            const subCheckboxes = subPermissionsDiv.querySelectorAll('input[type="checkbox"]');
+            subCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+    }
+}
 </script>
 @endsection

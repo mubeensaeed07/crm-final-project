@@ -58,6 +58,9 @@ class SupervisorAuthController extends Controller
             'can_view_reports' => $supervisorModule->pivot->can_view_reports,
         ];
         
+        // Log module access
+        \App\Services\LoggingService::logModuleAccess($module->name, 'accessed');
+        
         // Route to appropriate module controller based on module name
         switch (strtolower($module->name)) {
             case 'hrm':
@@ -113,11 +116,17 @@ class SupervisorAuthController extends Controller
             'email' => $request->email,
         ]);
 
+        // Log the profile update
+        \App\Services\LoggingService::logProfileUpdate([], 'supervisor');
+
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }
 
     public function logout()
     {
+        // Log the logout before clearing session
+        \App\Services\LoggingService::logLogout('supervisor');
+        
         Auth::guard('supervisor')->logout();
         session()->forget(['user_type', 'supervisor_id']);
         

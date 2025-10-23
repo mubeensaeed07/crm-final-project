@@ -55,6 +55,9 @@ class AuthController extends Controller
                 return redirect()->back()->with('error', 'Your account is pending approval.');
             }
 
+            // Log the login
+            \App\Services\LoggingService::logLogin('user');
+
             return redirect()->intended('/');
         }
 
@@ -69,6 +72,9 @@ class AuthController extends Controller
 
             // Store supervisor info in session for dashboard access
             session(['user_type' => 'supervisor', 'supervisor_id' => $supervisor->id]);
+            
+            // Log the login
+            \App\Services\LoggingService::logLogin('supervisor');
             
             // Debug: Log successful authentication
             \Log::info('Supervisor authentication successful', [
@@ -159,6 +165,9 @@ class AuthController extends Controller
         
         // User identification is handled by userInfo relationship
 
+        // Log the admin creation
+        \App\Services\LoggingService::logUserCreation($user->full_name, 'Admin');
+
         \Log::info('User created successfully', ['user_id' => $user->id, 'superadmin_id' => $superAdminId]);
         
         return redirect()->route('login')->with('success', 'Registration successful! Please wait for SuperAdmin approval.');
@@ -166,6 +175,9 @@ class AuthController extends Controller
 
     public function logout()
     {
+        // Log the logout before clearing session
+        \App\Services\LoggingService::logLogout('user');
+        
         Auth::logout();
         
         // Clear all session data
@@ -218,6 +230,9 @@ class AuthController extends Controller
         }
 
         $user->update($updateData);
+
+        // Log the profile update
+        \App\Services\LoggingService::logProfileUpdate();
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }

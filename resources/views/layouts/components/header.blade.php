@@ -523,17 +523,23 @@
                         <!-- Start::header-element -->
                         <div class="header-element">
                             <!-- Start::header-link|dropdown-toggle -->
+                            @php
+                                $user = Auth::user();
+                                $supervisor = Auth::guard('supervisor')->user();
+                                $currentUser = $user ?: $supervisor;
+                            @endphp
                             <a href="javascript:void(0);" class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                 <div class="d-flex align-items-center">
                                     <div class="me-sm-2 me-0">
-                                        <img src="{{asset('build/assets/images/faces/9.jpg')}}" alt="img" width="32" height="32" class="rounded-circle">
+                                        @if($currentUser && $currentUser->userInfo && $currentUser->userInfo->avatar)
+                                            <img src="{{ asset('storage/' . $currentUser->userInfo->avatar) }}" alt="Profile Picture" width="32" height="32" class="rounded-circle" style="object-fit: cover;">
+                                        @else
+                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white" style="width: 32px; height: 32px;">
+                                                <i class="ti ti-user fs-12"></i>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="d-sm-block d-none">
-                                        @php
-                                            $user = Auth::user();
-                                            $supervisor = Auth::guard('supervisor')->user();
-                                            $currentUser = $user ?: $supervisor;
-                                        @endphp
                                         <p class="fw-semibold mb-0 lh-1">{{ $currentUser->full_name ?? 'User' }}</p>
                                         <span class="op-7 fw-normal d-block fs-11">
                                             @if($user && $user->isSuperAdmin())
@@ -557,6 +563,8 @@
                                 <li><a class="dropdown-item d-flex" href="{{ route('supervisor.profile') }}"><i class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
                                 @elseif($user && $user->isSupervisor())
                                 <li><a class="dropdown-item d-flex" href="{{ route('supervisor.profile') }}"><i class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
+                                @elseif($user && $user->isAdmin())
+                                <li><a class="dropdown-item d-flex" href="{{ route('admin.profile') }}"><i class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
                                 @else
                                 <li><a class="dropdown-item d-flex" href="{{ route('user.profile') }}"><i class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
                                 @endif

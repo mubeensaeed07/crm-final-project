@@ -458,7 +458,16 @@ class HRMController extends Controller
             ['id' => 3, 'name' => 'User', 'description' => 'Regular system user']
         ];
         
-        return view('hrm::users.create', compact('modules', 'departments', 'userTypes', 'availableRoles'));
+        // Get admin's company name for auto-filling
+        $adminCompanyName = null;
+        if ($currentUser && $currentUser->isAdmin()) {
+            $adminCompanyName = $currentUser->company_name;
+        } elseif ($isSupervisor && $currentUser && $currentUser->admin_id) {
+            $admin = User::find($currentUser->admin_id);
+            $adminCompanyName = $admin ? $admin->company_name : null;
+        }
+        
+        return view('hrm::users.create', compact('modules', 'departments', 'userTypes', 'availableRoles', 'adminCompanyName'));
     }
 
     public function storeUser(Request $request)
@@ -610,8 +619,18 @@ class HRMController extends Controller
                         'can_mark_salary_pending' => in_array('mark_salary_pending', $permissions),
                         'can_view_salary_data' => in_array('view_salary_data', $permissions),
                         'can_manage_salary_payments' => in_array('manage_salary_payments', $permissions),
-                        'can_access_user_support' => in_array('access_user_support', $permissions),
-                        'can_access_dealer_support' => in_array('access_dealer_support', $permissions),
+                'can_access_user_support' => in_array('access_user_support', $permissions),
+                'can_access_dealer_support' => in_array('access_dealer_support', $permissions),
+                'user_support_can_view' => in_array('user_support_can_view', $request->user_support_permissions[$moduleId] ?? []),
+                'user_support_can_update' => in_array('user_support_can_update', $request->user_support_permissions[$moduleId] ?? []),
+                'user_support_can_expiry_update' => in_array('user_support_can_expiry_update', $request->user_support_permissions[$moduleId] ?? []),
+                'user_support_can_package_change' => in_array('user_support_can_package_change', $request->user_support_permissions[$moduleId] ?? []),
+                'user_support_can_add_days' => in_array('user_support_can_add_days', $request->user_support_permissions[$moduleId] ?? []),
+                'dealer_support_can_view' => in_array('dealer_support_can_view', $request->dealer_support_permissions[$moduleId] ?? []),
+                'dealer_support_can_update' => in_array('dealer_support_can_update', $request->dealer_support_permissions[$moduleId] ?? []),
+                'dealer_support_can_expiry_update' => in_array('dealer_support_can_expiry_update', $request->dealer_support_permissions[$moduleId] ?? []),
+                'dealer_support_can_package_change' => in_array('dealer_support_can_package_change', $request->dealer_support_permissions[$moduleId] ?? []),
+                'dealer_support_can_add_days' => in_array('dealer_support_can_add_days', $request->dealer_support_permissions[$moduleId] ?? []),
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
@@ -650,6 +669,9 @@ class HRMController extends Controller
                 'error' => $e->getMessage()
             ]);
         }
+
+        // Log the user creation
+        \App\Services\LoggingService::logUserCreation($user->full_name, 'User');
 
         return redirect()->route('hrm.users.index')->with('success', 'User created successfully! Welcome email sent.');
     }

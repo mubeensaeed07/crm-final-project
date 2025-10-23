@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserInfo;
 use App\Models\Module;
 use App\Models\UserModule;
 use App\Models\UserType;
@@ -48,7 +49,10 @@ class AdminController extends Controller
                     })
                     ->get();
         
-        return view('admin.users', compact('users', 'modules', 'userTypes', 'userModules', 'departments'));
+        // Get current admin's company name
+        $admin = auth()->user();
+        
+        return view('admin.users', compact('users', 'modules', 'userTypes', 'userModules', 'departments', 'admin'));
     }
 
     public function modules()
@@ -61,6 +65,224 @@ class AdminController extends Controller
     public function settings()
     {
         return view('admin.settings');
+    }
+
+    public function profile()
+    {
+        $user = Auth::user();
+        $user->load('userInfo');
+        
+        // Ensure user has a userInfo record
+        if (!$user->userInfo) {
+            $user->userInfo()->create([
+                'phone' => null,
+                'address' => null,
+                'city' => null,
+                'avatar' => null,
+                'bio' => null,
+                'linkedin_url' => null,
+                'website_url' => null,
+                'emergency_contact_name' => null,
+                'emergency_contact_phone' => null,
+                'emergency_contact_relationship' => null,
+                'timezone' => null,
+                'language' => null,
+                'email_notifications' => true,
+                'sms_notifications' => true,
+            ]);
+            $user->load('userInfo');
+        }
+        
+        return view('admin.profile', compact('user'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'address' => 'nullable|string|max:500',
+            'city' => 'nullable|string|max:100',
+            'linkedin_url' => 'nullable|url|max:255',
+            'website_url' => 'nullable|url|max:255',
+            'emergency_contact_name' => 'nullable|string|max:100',
+            'emergency_contact_phone' => 'nullable|string|max:20',
+            'emergency_contact_relationship' => 'nullable|string|max:50',
+            'timezone' => 'nullable|string|max:50',
+            'language' => 'nullable|string|max:10',
+            'email_notifications' => 'boolean',
+            'sms_notifications' => 'boolean',
+            // Company fields
+            'company_name' => 'nullable|string|max:255',
+            'company_location' => 'nullable|string|max:255',
+            'company_ntn_number' => 'nullable|string|max:50',
+            'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'company_print_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'company_bio' => 'nullable|string|max:1000',
+            'company_country' => 'nullable|string|max:100',
+            // Password change validation
+            'current_password' => 'nullable|required_with:new_password',
+            'new_password' => 'nullable|min:8|confirmed',
+            'new_password_confirmation' => 'nullable|required_with:new_password',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Handle password change
+        if ($request->filled('new_password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return redirect()->back()
+                    ->withErrors(['current_password' => 'Current password is incorrect'])
+                    ->withInput();
+            }
+            $user->password = Hash::make($request->new_password);
+        }
+
+        $data = $request->only([
+            'phone', 'address', 'city', 'linkedin_url', 'website_url', 
+            'emergency_contact_name', 'emergency_contact_phone',
+            'emergency_contact_relationship', 'timezone', 'language', 'company_name',
+            'company_location', 'company_ntn_number', 'company_bio', 'company_country'
+        ]);
+        
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            
+            // Validate file size (2MB max)
+            if ($avatar->getSize() > 2 * 1024 * 1024) {
+                return redirect()->back()
+                    ->withErrors(['avatar' => 'File size must be less than 2MB'])
+                    ->withInput();
+            }
+            
+            // Validate file type
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!in_array($avatar->getMimeType(), $allowedTypes)) {
+                return redirect()->back()
+                    ->withErrors(['avatar' => 'Only JPG, PNG, GIF, and WebP images are allowed'])
+                    ->withInput();
+            }
+            
+            // Delete old avatar if exists
+            if ($user->userInfo && $user->userInfo->avatar) {
+                $oldAvatarPath = storage_path('app/public/' . $user->userInfo->avatar);
+                if (file_exists($oldAvatarPath)) {
+                    unlink($oldAvatarPath);
+                }
+            }
+            
+            // Generate unique filename
+            $avatarName = 'admin_' . $user->id . '_' . time() . '.' . $avatar->getClientOriginalExtension();
+            $avatar->storeAs('public/avatars', $avatarName);
+            $data['avatar'] = 'avatars/' . $avatarName;
+        }
+
+        // Handle company logo upload
+        if ($request->hasFile('company_logo')) {
+            $companyLogo = $request->file('company_logo');
+            
+            // Validate file size (2MB max)
+            if ($companyLogo->getSize() > 2 * 1024 * 1024) {
+                return redirect()->back()
+                    ->withErrors(['company_logo' => 'Company logo file size must be less than 2MB'])
+                    ->withInput();
+            }
+            
+            // Validate file type
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!in_array($companyLogo->getMimeType(), $allowedTypes)) {
+                return redirect()->back()
+                    ->withErrors(['company_logo' => 'Only JPG, PNG, GIF, and WebP images are allowed'])
+                    ->withInput();
+            }
+            
+            // Delete old company logo if exists
+            if ($user->company_logo) {
+                $oldLogoPath = storage_path('app/public/' . $user->company_logo);
+                if (file_exists($oldLogoPath)) {
+                    unlink($oldLogoPath);
+                }
+            }
+            
+            // Generate unique filename
+            $logoName = 'company_logo_' . $user->id . '_' . time() . '.' . $companyLogo->getClientOriginalExtension();
+            $companyLogo->storeAs('public/company_logos', $logoName);
+            $data['company_logo'] = 'company_logos/' . $logoName;
+        }
+
+        // Handle company print logo upload
+        if ($request->hasFile('company_print_logo')) {
+            $companyPrintLogo = $request->file('company_print_logo');
+            
+            // Validate file size (2MB max)
+            if ($companyPrintLogo->getSize() > 2 * 1024 * 1024) {
+                return redirect()->back()
+                    ->withErrors(['company_print_logo' => 'Company print logo file size must be less than 2MB'])
+                    ->withInput();
+            }
+            
+            // Validate file type
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!in_array($companyPrintLogo->getMimeType(), $allowedTypes)) {
+                return redirect()->back()
+                    ->withErrors(['company_print_logo' => 'Only JPG, PNG, GIF, and WebP images are allowed'])
+                    ->withInput();
+            }
+            
+            // Delete old company print logo if exists
+            if ($user->company_print_logo) {
+                $oldPrintLogoPath = storage_path('app/public/' . $user->company_print_logo);
+                if (file_exists($oldPrintLogoPath)) {
+                    unlink($oldPrintLogoPath);
+                }
+            }
+            
+            // Generate unique filename
+            $printLogoName = 'company_print_logo_' . $user->id . '_' . time() . '.' . $companyPrintLogo->getClientOriginalExtension();
+            $companyPrintLogo->storeAs('public/company_print_logos', $printLogoName);
+            $data['company_print_logo'] = 'company_print_logos/' . $printLogoName;
+        }
+        
+        // Handle boolean fields
+        $data['email_notifications'] = $request->has('email_notifications');
+        $data['sms_notifications'] = $request->has('sms_notifications');
+        
+        // Update user basic info
+        $user->update([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'company_name' => $data['company_name'],
+            'company_location' => $data['company_location'],
+            'company_ntn_number' => $data['company_ntn_number'],
+            'company_bio' => $data['company_bio'],
+            'company_country' => $data['company_country'],
+            'company_logo' => $data['company_logo'] ?? $user->company_logo,
+            'company_print_logo' => $data['company_print_logo'] ?? $user->company_print_logo,
+        ]);
+
+        // Update or create user info
+        $userInfo = $user->userInfo;
+        if (!$userInfo) {
+            $userInfo = $user->userInfo()->create($data);
+        } else {
+            $userInfo->update($data);
+        }
+
+        // Log the profile update
+        \App\Services\LoggingService::logProfileUpdate();
+
+        return redirect()->back()->with('success', 'Profile updated successfully!');
     }
 
     public function addUser(Request $request)
@@ -175,6 +397,9 @@ class AdminController extends Controller
             // Log the error but don't fail the user creation
             \Log::error('Failed to send user registration email: ' . $e->getMessage());
         }
+
+        // Log the user creation
+        \App\Services\LoggingService::logUserCreation($user->full_name, 'User');
 
         return redirect()->back()->with('success', 'User added successfully! An email with login credentials has been sent to the user.');
     }

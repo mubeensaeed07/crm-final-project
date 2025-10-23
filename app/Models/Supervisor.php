@@ -108,12 +108,35 @@ class Supervisor extends Authenticatable
         return $this->hasMany(SupervisorPermission::class);
     }
 
-    public function modules()
-    {
-        return $this->belongsToMany(Module::class, 'supervisor_permissions', 'supervisor_id', 'module_id')
-                    ->withPivot(['can_create_users', 'can_edit_users', 'can_delete_users', 'can_reset_passwords', 'can_assign_modules', 'can_view_reports', 'can_mark_salary_paid', 'can_mark_salary_pending', 'can_view_salary_data', 'can_manage_salary_payments', 'can_access_user_support', 'can_access_dealer_support'])
-                    ->withTimestamps();
-    }
+        public function modules()
+        {
+            return $this->belongsToMany(Module::class, 'supervisor_permissions', 'supervisor_id', 'module_id')
+                        ->withPivot([
+                            'can_create_users', 
+                            'can_edit_users', 
+                            'can_delete_users', 
+                            'can_reset_passwords', 
+                            'can_assign_modules', 
+                            'can_view_reports', 
+                            'can_mark_salary_paid', 
+                            'can_mark_salary_pending', 
+                            'can_view_salary_data', 
+                            'can_manage_salary_payments', 
+                            'can_access_user_support', 
+                            'can_access_dealer_support',
+                            'user_support_can_view',
+                            'user_support_can_update',
+                            'user_support_can_expiry_update',
+                            'user_support_can_package_change',
+                            'user_support_can_add_days',
+                            'dealer_support_can_view',
+                            'dealer_support_can_update',
+                            'dealer_support_can_expiry_update',
+                            'dealer_support_can_package_change',
+                            'dealer_support_can_add_days'
+                        ])
+                        ->withTimestamps();
+        }
 
     // Helper methods
     public function getFullNameAttribute()

@@ -66,6 +66,9 @@ class UserController extends Controller
         
         $module = $userModule->module;
         
+        // Log module access
+        \App\Services\LoggingService::logModuleAccess($module->name, 'accessed');
+        
         return view('user.module', compact('module', 'permissions', 'user'));
     }
 
@@ -256,6 +259,9 @@ class UserController extends Controller
         } else {
             $userInfo->update($data);
         }
+
+        // Log the profile update
+        \App\Services\LoggingService::logProfileUpdate();
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }
