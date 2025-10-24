@@ -21,7 +21,19 @@ class UserModule extends Model
         'can_mark_salary_paid',
         'can_mark_salary_pending',
         'can_view_salary_data',
-        'can_manage_salary_payments'
+        'can_manage_salary_payments',
+        'can_access_user_support',
+        'can_access_dealer_support',
+        'user_support_can_view',
+        'user_support_can_update',
+        'user_support_can_expiry_update',
+        'user_support_can_package_change',
+        'user_support_can_add_days',
+        'dealer_support_can_view',
+        'dealer_support_can_update',
+        'dealer_support_can_expiry_update',
+        'dealer_support_can_package_change',
+        'dealer_support_can_add_days'
     ];
 
     public function user()

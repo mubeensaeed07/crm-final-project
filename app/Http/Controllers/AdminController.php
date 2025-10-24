@@ -382,11 +382,41 @@ class AdminController extends Controller
         ]);
 
 
-        // Assign modules to user
+        // Assign modules to user with permissions
         foreach ($request->modules as $moduleId) {
+            $permissions = [];
+            
+            // Get permissions for this module if they exist
+            if ($request->has('permissions') && isset($request->permissions[$moduleId])) {
+                $permissions = $request->permissions[$moduleId];
+            }
+            
+            // Create UserModule with permissions
             UserModule::create([
                 'user_id' => $user->id,
-                'module_id' => $moduleId
+                'module_id' => $moduleId,
+                'can_create_users' => in_array('create_users', $permissions),
+                'can_edit_users' => in_array('edit_users', $permissions),
+                'can_delete_users' => in_array('delete_users', $permissions),
+                'can_reset_passwords' => in_array('reset_passwords', $permissions),
+                'can_assign_modules' => in_array('assign_modules', $permissions),
+                'can_view_reports' => in_array('view_reports', $permissions),
+                'can_mark_salary_paid' => in_array('mark_salary_paid', $permissions),
+                'can_mark_salary_pending' => in_array('mark_salary_pending', $permissions),
+                'can_view_salary_data' => in_array('view_salary_data', $permissions),
+                'can_manage_salary_payments' => in_array('manage_salary_payments', $permissions),
+                'can_access_user_support' => in_array('access_user_support', $permissions),
+                'can_access_dealer_support' => in_array('access_dealer_support', $permissions),
+                'user_support_can_view' => in_array('user_support_can_view', $request->user_support_permissions[$moduleId] ?? []),
+                'user_support_can_update' => in_array('user_support_can_update', $request->user_support_permissions[$moduleId] ?? []),
+                'user_support_can_expiry_update' => in_array('user_support_can_expiry_update', $request->user_support_permissions[$moduleId] ?? []),
+                'user_support_can_package_change' => in_array('user_support_can_package_change', $request->user_support_permissions[$moduleId] ?? []),
+                'user_support_can_add_days' => in_array('user_support_can_add_days', $request->user_support_permissions[$moduleId] ?? []),
+                'dealer_support_can_view' => in_array('dealer_support_can_view', $request->dealer_support_permissions[$moduleId] ?? []),
+                'dealer_support_can_update' => in_array('dealer_support_can_update', $request->dealer_support_permissions[$moduleId] ?? []),
+                'dealer_support_can_expiry_update' => in_array('dealer_support_can_expiry_update', $request->dealer_support_permissions[$moduleId] ?? []),
+                'dealer_support_can_package_change' => in_array('dealer_support_can_package_change', $request->dealer_support_permissions[$moduleId] ?? []),
+                'dealer_support_can_add_days' => in_array('dealer_support_can_add_days', $request->dealer_support_permissions[$moduleId] ?? [])
             ]);
         }
 

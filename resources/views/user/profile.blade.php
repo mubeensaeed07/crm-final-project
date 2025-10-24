@@ -24,6 +24,18 @@
         padding-bottom: 0.5rem;
         border-bottom: 2px solid #e9ecef;
     }
+    .permissions-grid {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    .permission-item {
+        font-size: 0.9rem;
+        padding: 0.25rem 0;
+    }
+    .permission-item i {
+        width: 16px;
+        text-align: center;
+    }
 </style>
 @endsection
 
@@ -37,13 +49,19 @@
                 <div class="container-fluid">
                     <div class="row align-items-center">
                         <div class="col-auto">
+                            <div class="position-relative d-inline-block">
                             @if($user->userInfo && $user->userInfo->avatar)
-                                <img src="{{ asset('storage/' . $user->userInfo->avatar) }}" alt="Profile" class="profile-avatar">
+                                    <img id="header-avatar" src="{{ asset('storage/' . $user->userInfo->avatar) }}" alt="Profile" class="profile-avatar">
                             @else
-                                <div class="profile-avatar bg-white d-flex align-items-center justify-content-center">
+                                    <div id="header-avatar" class="profile-avatar bg-white d-flex align-items-center justify-content-center">
                                     <i class="ti ti-user fs-48 text-primary"></i>
                                 </div>
                             @endif
+                                <!-- Camera Button Overlay -->
+                                <button type="button" class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle" onclick="document.getElementById('avatar-input').click()" style="width: 40px; height: 40px; padding: 0; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); z-index: 10;">
+                                    <i class="ti ti-camera fs-16"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="col">
                             <h2 class="mb-1">{{ $user->full_name }}</h2>
@@ -81,16 +99,30 @@
                     <form method="POST" action="{{ route('user.profile.update') }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+                        
+                        <!-- Hidden file input for avatar -->
+                        <input type="file" class="d-none" name="avatar" id="avatar-input" accept="image/*" onchange="previewImage(this)">
 
                         <!-- Personal Information -->
                         <div class="row mb-4">
                             <div class="col-12">
                                 <h5 class="section-title">Personal Information</h5>
+                                @if($user->isUser())
+                                    <div class="alert alert-info">
+                                        <i class="ti ti-info-circle me-2"></i>
+                                        <strong>Note:</strong> As a regular user, you can only edit your profile picture and password. Contact your administrator to update other information.
+                                    </div>
+                                @endif
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">First Name <span class="text-danger">*</span></label>
+                                    @if($user->isUser())
+                                        <input type="text" class="form-control" value="{{ $user->first_name }}" readonly style="background-color: #f8f9fa;">
+                                        <small class="text-muted">Contact administrator to change</small>
+                                    @else
                                     <input type="text" class="form-control" name="first_name" value="{{ old('first_name', $user->first_name) }}" required>
+                                    @endif
                                     @error('first_name')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
@@ -99,7 +131,12 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                                    @if($user->isUser())
+                                        <input type="text" class="form-control" value="{{ $user->last_name }}" readonly style="background-color: #f8f9fa;">
+                                        <small class="text-muted">Contact administrator to change</small>
+                                    @else
                                     <input type="text" class="form-control" name="last_name" value="{{ old('last_name', $user->last_name) }}" required>
+                                    @endif
                                     @error('last_name')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
@@ -108,7 +145,12 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    @if($user->isUser())
+                                        <input type="email" class="form-control" value="{{ $user->email }}" readonly style="background-color: #f8f9fa;">
+                                        <small class="text-muted">Contact administrator to change</small>
+                                    @else
                                     <input type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}" required>
+                                    @endif
                                     @error('email')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
@@ -117,40 +159,15 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Phone Number</label>
+                                    @if($user->isUser())
+                                        <input type="tel" class="form-control" value="{{ $user->userInfo->phone ?? 'Not provided' }}" readonly style="background-color: #f8f9fa;">
+                                        <small class="text-muted">Contact administrator to change</small>
+                                    @else
                                     <input type="tel" class="form-control" name="phone" value="{{ old('phone', $user->userInfo->phone ?? '') }}">
+                                    @endif
                                     @error('phone')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Profile Picture</label>
-                                    <div class="profile-picture-upload">
-                                        <div class="current-avatar mb-3">
-                                            @if($user->userInfo && $user->userInfo->avatar)
-                                                <img id="current-avatar" src="{{ asset('storage/' . $user->userInfo->avatar) }}" alt="Current Profile" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #e9ecef;">
-                                            @else
-                                                <div id="current-avatar" class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white" style="width: 100px; height: 100px;">
-                                                    <i class="ti ti-user fs-24"></i>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div class="upload-section">
-                                            <input type="file" class="form-control" name="avatar" id="avatar-input" accept="image/*" onchange="previewImage(this)">
-                                            <small class="text-muted d-block mt-1">Choose a new profile picture (JPG, PNG, GIF - Max 2MB)</small>
-                                            @error('avatar')
-                                                <div class="text-danger fs-12">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div id="image-preview" class="mt-3" style="display: none;">
-                                            <h6>Preview:</h6>
-                                            <div class="position-relative d-inline-block">
-                                                <img id="preview-img" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #e9ecef;">
-                                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle" onclick="removePreview()" style="width: 25px; height: 25px; padding: 0; font-size: 12px;">×</button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +180,12 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label">Address</label>
+                                    @if($user->isUser())
+                                        <textarea class="form-control" rows="3" readonly style="background-color: #f8f9fa;">{{ $user->userInfo->address ?? 'Not provided' }}</textarea>
+                                        <small class="text-muted">Contact administrator to change</small>
+                                    @else
                                     <textarea class="form-control" name="address" rows="3" placeholder="Enter your full address">{{ old('address', $user->userInfo->address ?? '') }}</textarea>
+                                    @endif
                                     @error('address')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
@@ -172,7 +194,12 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">City</label>
+                                    @if($user->isUser())
+                                        <input type="text" class="form-control" value="{{ $user->userInfo->city ?? 'Not provided' }}" readonly style="background-color: #f8f9fa;">
+                                        <small class="text-muted">Contact administrator to change</small>
+                                    @else
                                     <input type="text" class="form-control" name="city" value="{{ old('city', $user->userInfo->city ?? '') }}">
+                                    @endif
                                     @error('city')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
@@ -188,7 +215,12 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Company</label>
+                                    @if($user->isUser())
+                                        <input type="text" class="form-control" value="{{ $user->userInfo->company ?? 'Not provided' }}" readonly style="background-color: #f8f9fa;">
+                                        <small class="text-muted">Contact administrator to change</small>
+                                    @else
                                     <input type="text" class="form-control" name="company" value="{{ old('company', $user->userInfo->company ?? '') }}">
+                                    @endif
                                     @error('company')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
@@ -197,7 +229,12 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label">Bio</label>
+                                    @if($user->isUser())
+                                        <textarea class="form-control" rows="4" readonly style="background-color: #f8f9fa;">{{ $user->bio ?? 'Not provided' }}</textarea>
+                                        <small class="text-muted">Contact administrator to change</small>
+                                    @else
                                     <textarea class="form-control" name="bio" rows="4" placeholder="Tell us about yourself">{{ old('bio', $user->bio) }}</textarea>
+                                    @endif
                                     @error('bio')
                                         <div class="text-danger fs-12">{{ $message }}</div>
                                     @enderror
@@ -205,41 +242,96 @@
                             </div>
                         </div>
 
-                        <!-- Social Media -->
+
+
+
+                        <!-- Modules & Permissions Section -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="section-title">Social Media & Links</h5>
+                                <h5 class="section-title">My Modules & Permissions</h5>
+                                <p class="text-muted">View your assigned modules and permissions.</p>
                             </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">LinkedIn URL</label>
-                                    <input type="url" class="form-control" name="linkedin_url" value="{{ old('linkedin_url', $user->linkedin_url) }}" placeholder="https://linkedin.com/in/username">
-                                    @error('linkedin_url')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
+                            <div class="col-12">
+                                @php
+                                    $userModules = $user->userModules()->with('module')->get();
+                                @endphp
+                                
+                                
+                                
+                                
+                                @if($userModules->count() > 0)
+                                    <div class="row">
+                                        @foreach($userModules as $userModule)
+                                            <div class="col-md-6 col-lg-4 mb-3">
+                                                <div class="card border">
+                                                    <div class="card-header bg-primary text-white">
+                                                        <h6 class="mb-0">
+                                                            <i class="ti ti-package me-2"></i>
+                                                            {{ $userModule->module->name }}
+                                                        </h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="permissions-grid">
+                                                            @php
+                                                                // Only show permissions that are actually set (not default 0 values)
+                                                                $permissionLabels = [
+                                                                    'can_create_users' => 'Create Users',
+                                                                    'can_edit_users' => 'Edit Users', 
+                                                                    'can_delete_users' => 'Delete Users',
+                                                                    'can_reset_passwords' => 'Reset Passwords',
+                                                                    'can_assign_modules' => 'Assign Modules',
+                                                                    'can_view_reports' => 'View Reports',
+                                                                    'can_mark_salary_paid' => 'Mark Salary Paid',
+                                                                    'can_mark_salary_pending' => 'Mark Salary Pending',
+                                                                    'can_view_salary_data' => 'View Salary Data',
+                                                                    'can_manage_salary_payments' => 'Manage Salary Payments',
+                                                                    'can_access_user_support' => 'User Support Access',
+                                                                    'can_access_dealer_support' => 'Dealer Support Access',
+                                                                    'user_support_can_view' => 'User can view',
+                                                                    'user_support_can_update' => 'User can update',
+                                                                    'user_support_can_expiry_update' => 'User expiry update',
+                                                                    'user_support_can_package_change' => 'User package change',
+                                                                    'user_support_can_add_days' => 'User add days',
+                                                                    'dealer_support_can_view' => 'Dealer can view',
+                                                                    'dealer_support_can_update' => 'Dealer can update',
+                                                                    'dealer_support_can_expiry_update' => 'Dealer expiry update',
+                                                                    'dealer_support_can_package_change' => 'Dealer package change',
+                                                                    'dealer_support_can_add_days' => 'Dealer add days'
+                                                                ];
+                                                                
+                                                                $hasPermissions = false;
+                                                            @endphp
+                                                            
+                                                            @foreach($permissionLabels as $permission => $label)
+                                                                @if(isset($userModule->$permission) && $userModule->$permission == 1)
+                                                                    @php $hasPermissions = true; @endphp
+                                                                    <div class="permission-item d-flex align-items-center mb-2">
+                                                                        <i class="ti ti-check-circle text-success me-2"></i>
+                                                                        <span class="text-success">{{ $label }}</span>
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
+                                                            
+                                                            @if(!$hasPermissions)
+                                                                <div class="text-muted text-center py-3">
+                                                                    <i class="ti ti-info-circle me-2"></i>
+                                                                    No specific permissions set for this module
+                                                                </div>
+                                                            @endif
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Twitter URL</label>
-                                    <input type="url" class="form-control" name="twitter_url" value="{{ old('twitter_url', $user->twitter_url) }}" placeholder="https://twitter.com/username">
-                                    @error('twitter_url')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Website URL</label>
-                                    <input type="url" class="form-control" name="website_url" value="{{ old('website_url', $user->website_url) }}" placeholder="https://yourwebsite.com">
-                                    @error('website_url')
-                                        <div class="text-danger fs-12">{{ $message }}</div>
-                                    @enderror
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <div class="alert alert-info">
+                                        <i class="ti ti-info-circle me-2"></i>
+                                        No modules assigned yet. Contact your administrator to get module access.
                                 </div>
+                                @endif
                             </div>
                         </div>
-
-
 
                         <!-- Password Change Section -->
                         <div class="row mb-4">
@@ -323,100 +415,25 @@ function previewImage(input) {
         
         const reader = new FileReader();
         reader.onload = function(e) {
-            const previewImg = document.getElementById('preview-img');
-            const previewDiv = document.getElementById('image-preview');
-            
-            previewImg.src = e.target.result;
-            previewDiv.style.display = 'block';
-            
-            // Update current avatar preview
-            const currentAvatar = document.getElementById('current-avatar');
-            if (currentAvatar.tagName === 'IMG') {
-                currentAvatar.src = e.target.result;
+            // Update header avatar
+            const headerAvatar = document.getElementById('header-avatar');
+            if (headerAvatar.tagName === 'IMG') {
+                headerAvatar.src = e.target.result;
             } else {
                 // Replace the div with an img
                 const newImg = document.createElement('img');
+                newImg.id = 'header-avatar';
                 newImg.src = e.target.result;
-                newImg.alt = 'Profile Preview';
-                newImg.className = 'rounded-circle';
-                newImg.style.cssText = 'width: 100px; height: 100px; object-fit: cover; border: 3px solid #e9ecef;';
-                currentAvatar.parentNode.replaceChild(newImg, currentAvatar);
+                newImg.alt = 'Profile';
+                newImg.className = 'profile-avatar';
+                newImg.style.cssText = 'width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; object-fit: cover;';
+                headerAvatar.parentNode.replaceChild(newImg, headerAvatar);
             }
         };
         reader.readAsDataURL(file);
     }
 }
 
-function removePreview() {
-    const input = document.getElementById('avatar-input');
-    const previewDiv = document.getElementById('image-preview');
-    const currentAvatar = document.getElementById('current-avatar');
-    
-    // Reset file input
-    input.value = '';
-    
-    // Hide preview
-    previewDiv.style.display = 'none';
-    
-    // Reset current avatar to original
-    @if($user->userInfo && $user->userInfo->avatar)
-        currentAvatar.src = '{{ asset("storage/" . $user->userInfo->avatar) }}';
-    @else
-        // Replace img with div
-        const newDiv = document.createElement('div');
-        newDiv.id = 'current-avatar';
-        newDiv.className = 'rounded-circle bg-primary d-flex align-items-center justify-content-center text-white';
-        newDiv.style.cssText = 'width: 100px; height: 100px;';
-        newDiv.innerHTML = '<i class="ti ti-user fs-24"></i>';
-        currentAvatar.parentNode.replaceChild(newDiv, currentAvatar);
-    @endif
-}
 
-// Add drag and drop functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const uploadSection = document.querySelector('.upload-section');
-    const fileInput = document.getElementById('avatar-input');
-    
-    // Prevent default drag behaviors
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        uploadSection.addEventListener(eventName, preventDefaults, false);
-        document.body.addEventListener(eventName, preventDefaults, false);
-    });
-    
-    // Highlight drop area when item is dragged over it
-    ['dragenter', 'dragover'].forEach(eventName => {
-        uploadSection.addEventListener(eventName, highlight, false);
-    });
-    
-    ['dragleave', 'drop'].forEach(eventName => {
-        uploadSection.addEventListener(eventName, unhighlight, false);
-    });
-    
-    // Handle dropped files
-    uploadSection.addEventListener('drop', handleDrop, false);
-    
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    
-    function highlight(e) {
-        uploadSection.classList.add('border-primary', 'bg-light');
-    }
-    
-    function unhighlight(e) {
-        uploadSection.classList.remove('border-primary', 'bg-light');
-    }
-    
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        
-        if (files.length > 0) {
-            fileInput.files = files;
-            previewImage(fileInput);
-        }
-    }
-});
 </script>
 @endsection
